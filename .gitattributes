@@ -1,0 +1,51 @@
+*               text=auto
+
+*.cmd           text eol=crlf
+*.css           text diff=css
+*.htm           text diff=html
+*.html          text diff=html
+*.ini           text
+*.java          text diff=java
+*.js            text
+*.json          text
+*.md            text
+*.pl            text
+*.properties    text
+*.sh            text eol=lf
+*.sql           text
+*.tld           text
+*.tag           text
+*.tagx          text
+*.tf            text
+*.ts            text
+*.txt           text
+*.xhtml         text diff=html
+*.xml           text
+*.yaml          text
+
+*.class         binary
+*.ear           binary
+*.gif           binary
+*.ico           binary
+*.jar           binary
+*.jng           binary
+*.jpg           binary
+*.jpeg          binary
+*.pdf           binary
+*.png           binary
+*.svg           text
+*.war           binary
+
+AUTHORS         text
+CHANGELOG       text
+CHANGES         text
+CONTRIBUTING    text
+COPYING         text
+*COPYRIGHT*     text
+INSTALL         text
+LICENSE         text
+NEWS            text
+*README*        text
+TODO            text
+Dockerfile      text
+Makefile        text
