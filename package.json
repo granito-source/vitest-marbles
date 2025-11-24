@@ -1,14 +1,14 @@
 {
-  "name": "jest-marbles",
-  "version": "3.1.1",
-  "description": "Marble testing helpers library for RxJs and Jest",
+  "name": "@granito/vitest-marbles",
+  "version": "1.0.0-dev.0",
+  "description": "Marble testing helpers library for RxJs and Vitest",
   "main": "dist/umd/jest-marbles.js",
   "module": "dist/lib/index.js",
   "es2015": "dist/lib-esm/index.js",
   "typings": "dist/typings/index.d.ts",
   "repository": {
     "type": "git",
-    "url": "https://github.com/meltedspark/jest-marbles"
+    "url": "https://github.com/granito-source/vitest-marbles"
   },
   "author": "Evgeny Barabanov",
   "license": "MIT",
@@ -16,7 +16,7 @@
     "node": ">=18"
   },
   "keywords": [
-    "jest",
+    "vitest",
     "marbles",
     "marble",
     "testing",
