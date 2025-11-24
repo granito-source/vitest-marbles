@@ -1,4 +1,4 @@
-const { cold, hot, time } = require('../dist/umd/jest-marbles.min');
+const { cold, hot, time } = require('../dist/umd/vitest-marbles.min');
 
 /**
  * Created by Evgeny Barabanov on 05/03/2018.

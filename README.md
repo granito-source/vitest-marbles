@@ -46,7 +46,7 @@ expect(stream).toHaveSubscriptions(marbleString);
 expect(stream).toHaveSubscriptions(marbleStringsArray);
 expect(stream).toHaveNoSubscriptions();
 expect(stream).toSatisfyOnFlush(() => {
-  expect(someMock).toHaveBeenCalled();
+    expect(someMock).toHaveBeenCalled();
 });
 ```
 
