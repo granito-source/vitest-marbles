@@ -1,5 +1,5 @@
 import { cold, hot } from '../index';
-import { switchAll } from 'rxjs/operators';
+import { switchAll } from 'rxjs';
 
 describe('toHaveSubscriptions matcher', () => {
   it('Should figure out single subscription points', () => {

@@ -1,14 +1,16 @@
-const jestExpect = expect;
-
 import { assertDeepEqual } from '../src/rxjs/assert-deep-equal';
 
+const vitestExpect = expect;
+
 const matchersMock = {
-  toBeSubscriptions: jest.fn(),
-  toBeNotifications: jest.fn(),
-  toHaveEmptySubscriptions: jest.fn(),
+  toBeSubscriptions: vi.fn(),
+  toBeNotifications: vi.fn(),
+  toHaveEmptySubscriptions: vi.fn(),
 };
-const expectMock = jest.fn(() => matchersMock);
-(global as any).expect = expectMock;
+
+const expectMock = vi.fn(() => matchersMock);
+
+expect = expectMock as any;
 
 describe('assertDeepEqual test', () => {
   beforeEach(() => {
@@ -28,7 +30,7 @@ describe('assertDeepEqual test', () => {
         { subscribedFrame: 10, unsubscribedFrame: 50 },
       ]
     );
-    jestExpect(matchersMock.toBeSubscriptions).toHaveBeenCalledTimes(1);
+    vitestExpect(matchersMock.toBeSubscriptions).toHaveBeenCalledTimes(1);
   });
 
   it('Should call subscriptions matcher if actual is empty array and expected is array of subscriptions', () => {
@@ -39,7 +41,7 @@ describe('assertDeepEqual test', () => {
         { subscribedFrame: 10, unsubscribedFrame: 50 },
       ]
     );
-    jestExpect(matchersMock.toBeSubscriptions).toHaveBeenCalledTimes(1);
+    vitestExpect(matchersMock.toBeSubscriptions).toHaveBeenCalledTimes(1);
   });
 
   it('Should call notifications matcher if received arrays of notifications', () => {
@@ -53,7 +55,7 @@ describe('assertDeepEqual test', () => {
         { frame: 110, notification: { kind: 'N', value: 'e' } },
       ]
     );
-    jestExpect(matchersMock.toBeNotifications).toHaveBeenCalledTimes(1);
+    vitestExpect(matchersMock.toBeNotifications).toHaveBeenCalledTimes(1);
   });
 
   it('Should call notifications matcher when the actual is empty array and expected is array of notifications', () => {
@@ -64,7 +66,7 @@ describe('assertDeepEqual test', () => {
         { frame: 110, notification: { kind: 'N', value: 'e' } },
       ]
     );
-    jestExpect(matchersMock.toBeNotifications).toHaveBeenCalledTimes(1);
+    vitestExpect(matchersMock.toBeNotifications).toHaveBeenCalledTimes(1);
   });
 
   it('Should call notifications matcher when expected is empty array and actual is array of notifications', () => {
@@ -75,11 +77,11 @@ describe('assertDeepEqual test', () => {
       ],
       []
     );
-    jestExpect(matchersMock.toBeNotifications).toHaveBeenCalledTimes(1);
+    vitestExpect(matchersMock.toBeNotifications).toHaveBeenCalledTimes(1);
   });
 
   it('Should call empty subscriptions matcher if expected array is empty and actual array is array of subscriptions', () => {
     assertDeepEqual([{ subscribedFrame: 30, unsubscribedFrame: 60 }], []);
-    jestExpect(matchersMock.toHaveEmptySubscriptions).toHaveBeenCalledTimes(1);
+    vitestExpect(matchersMock.toHaveEmptySubscriptions).toHaveBeenCalledTimes(1);
   });
 });

@@ -1,5 +1,4 @@
-import { delay, merge, Subject, switchMap, timer } from 'rxjs';
-import { concat, mapTo } from 'rxjs/operators';
+import { concat, delay, map, merge, Subject, switchMap, timer } from 'rxjs';
 import { cold, hot, schedule, Scheduler, time } from '../index';
 
 describe('toBeObservable matcher test', () => {
@@ -8,7 +7,7 @@ describe('toBeObservable matcher test', () => {
     const b$ = cold('-b-|', { b: 1 });
     const expected = cold('-a--b-|', { a: 0, b: 1 });
 
-    expect(a$.pipe(concat(b$))).toBeObservable(expected);
+    expect(concat(a$, b$)).toBeObservable(expected);
   });
 
   it('Should work for value objects', () => {
@@ -23,7 +22,7 @@ describe('toBeObservable matcher test', () => {
     const falses$ = cold('--a-----b-----|');
     const trues$ = cold('-----a-----b--|');
     const expected = cold('--f--t--f--t--|', { t: true, f: false });
-    const mapped = merge(falses$.pipe(mapTo(false)), trues$.pipe(mapTo(true)));
+    const mapped = merge(falses$.pipe(map(() => false)), trues$.pipe(map(() => true)));
 
     expect(mapped).toBeObservable(expected);
   });
@@ -55,7 +54,7 @@ describe('toBeObservable matcher test', () => {
 
   it('Should delay the emission by provided timeout with provided scheduler', () => {
     const delay = time('-----d|');
-    const provided = timer(delay, Scheduler.get()).pipe(mapTo(0));
+    const provided = timer(delay, Scheduler.get()).pipe(map(() => 0));
     const expected = hot('------(d|)', { d: 0 });
 
     expect(provided).toBeObservable(expected);
@@ -72,6 +71,7 @@ describe('toBeObservable matcher test', () => {
 
   it('Should work with asymmetric matchers', () => {
     const e$ = hot('-a', { a: { someprop: 'hey', x: { y: 1, z: 2 }, blah: '3' } });
+
     expect(e$).toBeObservable(
       cold('-b', {
         b: expect.objectContaining({
@@ -89,6 +89,7 @@ describe('toBeObservable matcher test', () => {
 
     schedule(() => source.next('a'), 1);
     schedule(() => source.next('b'), 2);
+
     const expected = cold('ab');
 
     expect(source).toBeObservable(expected);
@@ -103,6 +104,7 @@ describe('toBeObservable matcher test', () => {
 
   it('Should pass if the two objects have the same properties but in different order', () => {
     const e$ = hot('-a', { a: { someprop: 'hey', b: 1 } });
+
     expect(e$).toBeObservable(cold('-b', { b: { b: 1, someprop: 'hey' } }));
   });
 

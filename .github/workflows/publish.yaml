@@ -22,10 +22,8 @@ jobs:
         run: npm ci
       - name: Build
         run: npm run build
-      - name: Run unit tests
+      - name: Test
         run: npm test
-      - name: Run e2e tests
-        run: npm run e2e
       - name: Publish
         run: npm publish dist/ --access public
         env:

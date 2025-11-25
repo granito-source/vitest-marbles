@@ -20,6 +20,9 @@
     "declarationDir": "dist/typings",
     "stripInternal": true,
     "skipLibCheck": true,
+    "types": [
+      "vitest/globals"
+    ]
   },
   "files": [
     "index.ts"

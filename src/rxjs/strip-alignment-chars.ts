@@ -1,3 +1,3 @@
 export function stripAlignmentChars(marbles: string) {
-  return marbles.replace(/^[ ]+/, '');
+  return marbles.replace(/^ +/, '');
 }

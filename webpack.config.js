@@ -1,21 +1,26 @@
 const { resolve } = require('path');
+
 const webpack = require('webpack');
+
 const { getIfUtils, removeEmpty } = require('webpack-config-utils');
 
 const packageJSON = require('./package.json');
+
 const packageName = normalizePackageName(packageJSON.name);
 
 const LIB_NAME = pascalCase(packageName);
+
 const PATHS = {
   entryPoint: resolve(__dirname, 'index.ts'),
   umd: resolve(__dirname, 'dist/umd'),
   fesm: resolve(__dirname, 'dist/lib-fesm'),
 };
+
 // https://webpack.js.org/configuration/configuration-types/#exporting-a-function-to-use-env
 // this is equal to 'webpack --env=dev'
 const DEFAULT_ENV = 'dev';
 
-const EXTERNALS = ['jest', 'jest-diff', 'jest-matcher-utils', /^expect\/.*$/, /^rxjs.*$/];
+const EXTERNALS = ['vitest', /^rxjs.*$/];
 
 const RULES = {
   ts: {
@@ -139,5 +144,6 @@ function pascalCase(myStr) {
 
 function normalizePackageName(rawPackageName) {
   const scopeEnd = rawPackageName.indexOf('/') + 1;
+
   return rawPackageName.substring(scopeEnd);
 }

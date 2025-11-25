@@ -1,4 +1,5 @@
 import { MarblesGlossary } from './marbles-glossary';
+
 export const ValueLiteral = {};
 
 export const NotificationKindChars = {

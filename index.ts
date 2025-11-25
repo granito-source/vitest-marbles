@@ -9,30 +9,20 @@ export type ObservableWithSubscriptions = ColdObservable | HotObservable;
 
 export { Scheduler } from './src/rxjs/scheduler';
 
-declare global {
-  // eslint-disable-next-line @typescript-eslint/no-namespace
-  namespace jest {
-    interface Matchers<R extends void | Promise<void>> {
-      toBeObservable(observable: ObservableWithSubscriptions): R;
+interface CustomMatchers<R = unknown> {
+  toBeObservable(observable: ObservableWithSubscriptions): R;
 
-      toHaveSubscriptions(marbles: string | string[]): R;
+  toHaveSubscriptions(marbles: string | string[]): R;
 
-      toHaveNoSubscriptions(): R;
+  toHaveNoSubscriptions(): R;
 
-      toBeMarble(marble: string): R;
+  toBeMarble(marble: string): R;
 
-      toSatisfyOnFlush(func: () => void): R;
-    }
-  }
+  toSatisfyOnFlush(func: () => void): R;
 }
 
-declare module 'expect' {
-  interface Matchers<R extends void | Promise<void>> {
-    toBeObservable(observable: ObservableWithSubscriptions): R;
-    toHaveSubscriptions(marbles: string | string[]): R;
-    toHaveNoSubscriptions(): R;
-    toBeMarble(marble: string): R;
-    toSatisfyOnFlush(func: () => void): R;
+declare module 'vitest' {
+  interface Matchers<T = any> extends CustomMatchers<T> {
   }
 }
 
@@ -61,32 +51,34 @@ expect.extend({
   toHaveSubscriptions(actual: ObservableWithSubscriptions, marbles: string | string[]) {
     const sanitizedMarbles = Array.isArray(marbles) ? marbles.map(stripAlignmentChars) : stripAlignmentChars(marbles);
     Scheduler.get().expectSubscriptions(actual.getSubscriptions()).toBe(sanitizedMarbles);
+
     return dummyResult;
   },
-
   toHaveNoSubscriptions(actual: ObservableWithSubscriptions) {
     Scheduler.get().expectSubscriptions(actual.getSubscriptions()).toBe([]);
+
     return dummyResult;
   },
-
   toBeObservable(actual, expected: ObservableWithSubscriptions) {
     Scheduler.get().expectObservable(actual).toBe(expected.marbles, expected.values, expected.error);
+
     return dummyResult;
   },
-
   toBeMarble(actual: ObservableWithSubscriptions, marbles: string) {
     Scheduler.get().expectObservable(actual).toBe(stripAlignmentChars(marbles));
+
     return dummyResult;
   },
-
   toSatisfyOnFlush(actual: ObservableWithSubscriptions, func: () => void) {
     Scheduler.get().expectObservable(actual);
-    // tslint:disable:no-string-literal
+
     const flushTests = Scheduler.get()['flushTests'];
+
     flushTests[flushTests.length - 1].ready = true;
     onFlush.push(func);
+
     return dummyResult;
-  },
+  }
 });
 
 let onFlush: (() => void)[] = [];
@@ -95,12 +87,12 @@ beforeEach(() => {
   Scheduler.init();
   onFlush = [];
 });
+
 afterEach(() => {
-  Scheduler.get().run(() => {
-    TestScheduler.frameTimeFactor = 10;
-  });
-  while (onFlush.length > 0) {
+  Scheduler.get().run(() => TestScheduler.frameTimeFactor = 10);
+
+  while (onFlush.length > 0)
     onFlush.shift()?.();
-  }
+
   Scheduler.reset();
 });
