@@ -2,19 +2,11 @@
   "name": "@granito/vitest-marbles",
   "version": "1.0.0-dev.0",
   "description": "Marble testing helpers library for RxJs and Vitest",
-  "main": "dist/umd/jest-marbles.js",
-  "module": "dist/lib/index.js",
-  "es2015": "dist/lib-esm/index.js",
-  "typings": "dist/typings/index.d.ts",
   "repository": {
     "type": "git",
-    "url": "https://github.com/granito-source/vitest-marbles"
+    "url": "git+https://github.com/granito-source/vitest-marbles.git"
   },
   "license": "MIT",
-  "engines": {
-    "node": ">=22",
-    "npm": ">=10"
-  },
   "keywords": [
     "vitest",
     "marbles",
@@ -24,19 +16,35 @@
     "rxjs",
     "observable"
   ],
+  "engines": {
+    "node": ">=22",
+    "npm": ">=10"
+  },
   "scripts": {
-    "build": "tsc && tsc --target es2017 --outDir dist/lib-esm && webpack && webpack --env prod",
+    "build": "tsc",
     "test": "vitest --no-watch"
   },
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "exports": {
+    "./package.json": {
+      "default": "./package.json"
+    },
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "module": "./dist/index.js",
+  "typings": "./dist/index.d.ts",
+  "sideEffects": false,
   "devDependencies": {
     "jsdom": "^27.2.0",
     "rxjs": "^7.8.2",
-    "ts-loader": "^9.3.1",
     "typescript": "^5.9.3",
-    "vitest": "^4.0.13",
-    "webpack": "^5.103.0",
-    "webpack-cli": "^6.0.1",
-    "webpack-config-utils": "^2.3.1"
+    "vitest": "^4.0.13"
   },
   "peerDependencies": {
     "rxjs": "^7.0.0",
