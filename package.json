@@ -10,10 +10,10 @@
     "type": "git",
     "url": "https://github.com/granito-source/vitest-marbles"
   },
-  "author": "Evgeny Barabanov",
   "license": "MIT",
   "engines": {
-    "node": ">=18"
+    "node": ">=22",
+    "npm": ">=10"
   },
   "keywords": [
     "vitest",
