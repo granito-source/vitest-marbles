@@ -1,6 +1,6 @@
 {
   "name": "@granito/vitest-marbles",
-  "version": "1.0.0-dev.0",
+  "version": "1.0.0-dev.1",
   "description": "Marble testing helpers library for RxJs and Vitest",
   "repository": {
     "type": "git",
@@ -23,6 +23,10 @@
   "scripts": {
     "build": "tsc",
     "test": "vitest --no-watch"
+  },
+  "publishConfig": {
+    "access": "public",
+    "tag": "latest"
   },
   "files": [
     "dist"
