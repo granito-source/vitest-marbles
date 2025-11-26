@@ -4,7 +4,7 @@ import { SubscriptionLog } from './types';
 import { Scheduler } from './scheduler';
 
 export class ColdObservable extends Observable<any> {
-  source: ReturnType<TestScheduler['createColdObservable']>;
+  override source: ReturnType<TestScheduler['createColdObservable']>;
 
   constructor(public marbles: string, public values?: Record<string, any>, public error?: any) {
     super();

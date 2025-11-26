@@ -1,21 +1,24 @@
 {
   "compilerOptions": {
-    "moduleResolution": "node",
-    "module": "ESNext",
-    "target": "ES6",
+    "moduleResolution": "bundler",
+    "module": "ES2022",
+    "target": "ES2022",
     "lib": [
-      "ES2017"
+      "DOM",
+      "ESNext"
     ],
     "strict": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
-    "pretty": true,
     "sourceMap": true,
     "outDir": "dist",
     "declaration": true,
     "declarationDir": "dist",
     "stripInternal": true,
-    "skipLibCheck": true,
     "types": [
       "vitest/globals"
     ]
