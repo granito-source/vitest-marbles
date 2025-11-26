@@ -1,4 +1,4 @@
-import { Scheduler } from '../index';
+import { Scheduler } from './scheduler'
 
 describe('Scheduler unit test', () => {
   it('should throw if the Scheduler is not initialized', () => {

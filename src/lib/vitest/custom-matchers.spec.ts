@@ -1,5 +1,5 @@
-import { Marblizer } from '../src/marblizer';
-import { customTestMatchers } from '../src/vitest/custom-matchers';
+import { Marblizer } from '../marblizer';
+import { customTestMatchers } from './custom-matchers';
 import { MatcherState, SyncExpectationResult } from '@vitest/expect';
 
 const marblizeSubscriptionsMock = vi.fn(), marblizeMock = vi.fn();

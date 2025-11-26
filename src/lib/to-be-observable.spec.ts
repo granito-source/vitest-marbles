@@ -1,5 +1,6 @@
 import { concat, delay, map, merge, Subject, switchMap, timer } from 'rxjs';
-import { cold, hot, schedule, Scheduler, time } from '../index';
+import { cold, hot, schedule, time } from './marbles';
+import { Scheduler } from './rxjs/scheduler';
 
 describe('toBeObservable matcher test', () => {
   it('Should concatenate two cold observables into single cold observable', () => {

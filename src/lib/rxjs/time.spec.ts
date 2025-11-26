@@ -1,7 +1,8 @@
 import { map, timer } from 'rxjs';
-import { hot, Scheduler, time } from '../index';
+import { hot, time } from '../marbles';
+import { Scheduler } from './scheduler';
 
-describe('', () => {
+describe('time', () => {
   it('Should delay the emission by provided timeout with provided scheduler', () => {
     const delay$ = time('-----d|');
     const provided$ = timer(delay$, Scheduler.get()).pipe(map(() => 0));

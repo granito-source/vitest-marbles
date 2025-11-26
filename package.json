@@ -20,38 +20,61 @@
     "node": ">=22",
     "npm": ">=10"
   },
-  "scripts": {
-    "build": "tsc",
-    "test": "vitest --no-watch"
+  "files": [
+    "./"
+  ],
+  "type": "module",
+  "main": "./index.js",
+  "module": "./index.js",
+  "types": "./index.d.ts",
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "types": "./index.d.ts",
+      "import": "./index.js",
+      "default": "./index.js"
+    }
   },
   "publishConfig": {
     "access": "public",
     "tag": "latest"
   },
-  "files": [
-    "dist"
-  ],
-  "type": "module",
-  "exports": {
-    "./package.json": {
-      "default": "./package.json"
-    },
-    ".": {
-      "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
-    }
-  },
-  "module": "./dist/index.js",
-  "typings": "./dist/index.d.ts",
-  "sideEffects": false,
   "devDependencies": {
-    "jsdom": "^27.2.0",
+    "@nx/esbuild": "22.1.2",
+    "@nx/js": "22.1.2",
+    "@nx/vitest": "22.1.2",
+    "@types/node": "20.19.9",
+    "esbuild": "^0.27.0",
+    "jsdom": "~22.1.0",
+    "nx": "22.1.2",
     "rxjs": "^7.8.2",
-    "typescript": "^5.9.3",
-    "vitest": "^4.0.13"
+    "tslib": "^2.3.0",
+    "typescript": "~5.9.2",
+    "vite": "^7.2.4",
+    "vitest": "^4.0.0"
   },
   "peerDependencies": {
     "rxjs": "^7.0.0",
     "vitest": "^4.0.0"
+  },
+  "nx": {
+    "targets": {
+      "build": {
+        "executor": "@nx/esbuild:esbuild",
+        "outputs": ["{options.outputPath}"],
+        "options": {
+          "outputPath": "dist",
+          "main": "src/index.ts",
+          "tsConfig": "tsconfig.lib.json",
+          "format": ["esm"],
+          "declarationRootDir": "src",
+          "minify": true,
+          "assets": [
+            "LICENSE",
+            "README.md"
+          ]
+        }
+      }
+    }
   }
 }

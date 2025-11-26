@@ -1,4 +1,4 @@
-import { cold } from '../index';
+import { cold } from './marbles';
 
 describe('', () => {
   it('Should have typing for expect imported from globals', () => {

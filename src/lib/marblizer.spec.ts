@@ -1,5 +1,5 @@
-import { SubscriptionLog, TestMessages } from '../src/rxjs/types';
-import { Marblizer } from '../src/marblizer';
+import { SubscriptionLog, TestMessages } from './rxjs/types';
+import { Marblizer } from './marblizer';
 
 describe('Marblizer test', () => {
   it('Should marblize TestMessages', () => {

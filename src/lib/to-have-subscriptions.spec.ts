@@ -1,4 +1,4 @@
-import { cold, hot } from '../index';
+import { cold, hot } from './marbles';
 import { switchAll } from 'rxjs';
 
 describe('toHaveSubscriptions matcher', () => {

@@ -1,13 +1,11 @@
-import { ColdObservable } from './src/rxjs/cold-observable';
-import { HotObservable } from './src/rxjs/hot-observable';
-import { Scheduler } from './src/rxjs/scheduler';
-import { stripAlignmentChars } from './src/rxjs/strip-alignment-chars';
+import { ColdObservable } from './rxjs/cold-observable';
+import { HotObservable } from './rxjs/hot-observable';
+import { Scheduler } from './rxjs/scheduler';
+import { stripAlignmentChars } from './rxjs/strip-alignment-chars';
 import { Subscription } from 'rxjs';
 import { TestScheduler } from 'rxjs/testing';
 
 export type ObservableWithSubscriptions = ColdObservable | HotObservable;
-
-export { Scheduler } from './src/rxjs/scheduler';
 
 interface CustomMatchers<R = unknown> {
   toBeObservable(observable: ObservableWithSubscriptions): R;

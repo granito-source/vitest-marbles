@@ -1,4 +1,4 @@
-import { assertDeepEqual } from '../src/rxjs/assert-deep-equal';
+import { assertDeepEqual } from './assert-deep-equal';
 
 const vitestExpect = expect;
 

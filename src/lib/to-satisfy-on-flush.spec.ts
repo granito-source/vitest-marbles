@@ -1,4 +1,4 @@
-import { cold } from '../index';
+import { cold } from './marbles';
 import { tap } from 'rxjs';
 
 describe('toSatisfyOnFlush', () => {
