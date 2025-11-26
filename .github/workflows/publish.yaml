@@ -1,5 +1,6 @@
 name: Publish
 permissions:
+  id-token: write
   contents: read
 on:
   release:
@@ -13,7 +14,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
       - name: Setup Node
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v6
         with:
           node-version: "24.x"
           registry-url: https://registry.npmjs.org
@@ -26,5 +27,3 @@ jobs:
         run: npm test
       - name: Publish
         run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
