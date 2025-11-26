@@ -1,7 +1,7 @@
 # Security Policy
 
 Granito takes the security of our code seriously. If you believe you have found
-a security vulnerability in the _Vitest Marbles_, please **DO NOT** disclose
+a security vulnerability in _Vitest Marbles_, please **DO NOT** disclose
 it publicly until we’ve had a chance to fix it. Please don’t report security
 vulnerabilities using GitHub issues, instead follow the instructions below
 to disclose it responsibly.

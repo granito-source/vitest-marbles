@@ -16,9 +16,9 @@ clean way.
 
 # Prerequisites
 
-- Vitest;
-- RxJS;
-- familiarity with
+* Vitest;
+* RxJS;
+* familiarity with
   [marbles syntax](https://rxjs.dev/guide/testing/marble-testing).
 
 # Not supported
@@ -28,7 +28,7 @@ clean way.
 # Usage
 
 ```shell
-npm install --save-vev @granito/vitest-marbles
+npm install --save-dev @granito/vitest-marbles
 ```
 
 In the test file:
@@ -202,3 +202,8 @@ Allows you to schedule task on specified frame.
         expect(source).toBeObservable(expected);
     });
 ```
+
+# Credits
+
+This repository has been forked from <https://github.com/just-jeb/jest-marbles>
+by _Jenia "JeB" Barabanov_ and updated to use Vitest instead of Jest.
