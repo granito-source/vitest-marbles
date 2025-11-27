@@ -1,6 +1,6 @@
 {
   "name": "@granito/vitest-marbles",
-  "version": "1.0.0-dev.2",
+  "version": "1.0.0-dev.3",
   "description": "Marble testing helpers library for RxJs and Vitest",
   "repository": {
     "type": "git",
@@ -61,12 +61,16 @@
     "targets": {
       "build": {
         "executor": "@nx/esbuild:esbuild",
-        "outputs": ["{options.outputPath}"],
+        "outputs": [
+          "{options.outputPath}"
+        ],
         "options": {
           "outputPath": "dist",
           "main": "src/index.ts",
           "tsConfig": "tsconfig.lib.json",
-          "format": ["esm"],
+          "format": [
+            "esm"
+          ],
           "declarationRootDir": "src",
           "minify": true,
           "assets": [
