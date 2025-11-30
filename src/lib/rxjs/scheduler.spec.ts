@@ -1,15 +1,11 @@
-import { Scheduler } from './scheduler'
+import { Scheduler } from './scheduler';
 
-describe('Scheduler unit test', () => {
-  it('should throw if the Scheduler is not initialized', () => {
+describe('Scheduler', () => {
+  afterEach(() => Scheduler.init());
+
+  it('throws Error on #get() if it is not initialized', () => {
     Scheduler.reset();
 
-    try {
-      Scheduler.get();
-    } catch (err) {
-      expect(err).toEqual(new Error('Scheduler is not initialized'));
-    }
-
-    Scheduler.init();
+    expect(() => Scheduler.get()).toThrow(new Error('Scheduler is not initialized'));
   });
 });

@@ -72,7 +72,6 @@
             "esm"
           ],
           "declarationRootDir": "src",
-          "minify": true,
           "assets": [
             "LICENSE",
             "README.md"

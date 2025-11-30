@@ -41,8 +41,8 @@ export function schedule(work: () => void, delay: number): Subscription {
 }
 
 const dummyResult = {
-  message: () => '',
   pass: true,
+  message: () => '',
 };
 
 expect.extend({

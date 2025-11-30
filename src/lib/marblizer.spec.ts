@@ -1,8 +1,8 @@
 import { SubscriptionLog, TestMessages } from './rxjs/types';
 import { Marblizer } from './marblizer';
 
-describe('Marblizer test', () => {
-  it('Should marblize TestMessages', () => {
+describe('Marblizer', () => {
+  it('converts to marbles TestMessages', () => {
     // First dash is frame 0
     // ---(be)----c-f-----|
     const sample: TestMessages = [
@@ -17,7 +17,7 @@ describe('Marblizer test', () => {
     expect(marble).toEqual('---(be)----c-f-----|');
   });
 
-  it('Should marblize TestMessages with error', () => {
+  it('converts to marbles TestMessages with error', () => {
     const sample: TestMessages = [
       { frame: 30, notification: { kind: 'N', value: 'b' } },
       { frame: 30, notification: { kind: 'N', value: 'e' } },
@@ -28,7 +28,7 @@ describe('Marblizer test', () => {
     expect(marble).toEqual('---(be)----#');
   });
 
-  it('Should marblize TestMessages without completion', () => {
+  it('converts to marbles TestMessages without completion', () => {
     const sample: TestMessages = [
       { frame: 30, notification: { kind: 'N', value: 'b' } },
       { frame: 110, notification: { kind: 'N', value: 'e' } },
@@ -38,21 +38,21 @@ describe('Marblizer test', () => {
     expect(marble).toEqual('---b-------e');
   });
 
-  it('Should marblize Subscriptions without completion', () => {
+  it('converts to marbles Subscriptions without completion', () => {
     const sample: SubscriptionLog[] = [{ subscribedFrame: 20, unsubscribedFrame: Infinity }];
     const marble = Marblizer.marblizeSubscriptions(sample);
 
     expect(marble).toEqual(['--^']);
   });
 
-  it('Should marblize TestMessages without emission (but with completion)', () => {
+  it('converts to marbles TestMessages without emission (but with completion)', () => {
     const sample: TestMessages = [{ frame: 110, notification: { kind: 'C' } }];
     const marble = Marblizer.marblize(sample);
 
     expect(marble).toEqual('-----------|');
   });
 
-  it('Should marblize SubscriptionLogs', () => {
+  it('converts to marbles SubscriptionLogs', () => {
     const marble = Marblizer.marblizeSubscriptions([
       { subscribedFrame: 30, unsubscribedFrame: 60 },
       { subscribedFrame: 10, unsubscribedFrame: 50 },
