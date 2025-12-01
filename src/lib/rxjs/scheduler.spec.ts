@@ -1,7 +1,15 @@
 import { Scheduler } from './scheduler';
+import { expect } from 'vitest';
+import { TestScheduler } from 'rxjs/testing';
 
 describe('Scheduler', () => {
   afterEach(() => Scheduler.init());
+
+  it('provides TestScheduler when initialized', () => {
+    Scheduler.init();
+
+    expect(Scheduler.get()).toBeInstanceOf(TestScheduler);
+  });
 
   it('throws Error on #get() if it is not initialized', () => {
     Scheduler.reset();
