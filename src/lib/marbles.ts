@@ -1,15 +1,14 @@
-import { ColdObservable } from './rxjs/cold-observable';
-import { HotObservable } from './rxjs/hot-observable';
 import { Scheduler } from './rxjs/scheduler';
 import { stripAlignmentChars } from './rxjs/strip-alignment-chars';
 import { Subscription } from 'rxjs';
-
-export function hot<T = string>(marbles: string, values?: Record<string, T>, error?: any): HotObservable<T> {
-  return new HotObservable(stripAlignmentChars(marbles), values, error);
-}
+import { ColdObservable, HotObservable } from './rxjs/types';
 
 export function cold<T = string>(marbles: string, values?: Record<string, T>, error?: any): ColdObservable<T> {
-  return new ColdObservable(stripAlignmentChars(marbles), values, error);
+  return Scheduler.get().createColdObservable(stripAlignmentChars(marbles), values, error);
+}
+
+export function hot<T = string>(marbles: string, values?: Record<string, T>, error?: any): HotObservable<T> {
+  return Scheduler.get().createHotObservable(stripAlignmentChars(marbles), values, error) as HotObservable<T>;
 }
 
 export function time(marbles: string): number {
