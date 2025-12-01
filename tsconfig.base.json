@@ -7,10 +7,6 @@
     "isolatedModules": true,
     "module": "preserve",
     "target": "ES2022",
-    "lib": [
-      "DOM",
-      "ESNext"
-    ],
     "strict": true,
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
