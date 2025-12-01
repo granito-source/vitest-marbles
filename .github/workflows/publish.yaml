@@ -22,8 +22,8 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Build
-        run: npx nx run-many -t build
+        run: npx nx run-many --output-style=stream-without-prefixes -t build
       - name: Test
-        run: npx nx run-many -t test
+        run: npx nx run-many --output-style=stream-without-prefixes -t test
       - name: Publish
         run: npm publish ./dist/vitest-marbles
