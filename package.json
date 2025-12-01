@@ -44,6 +44,7 @@
     "@nx/js": "22.1.2",
     "@nx/vitest": "22.1.2",
     "@types/node": "20.19.9",
+    "@vitest/coverage-v8": "^4.0.14",
     "esbuild": "^0.27.0",
     "jsdom": "~22.1.0",
     "nx": "22.1.2",
@@ -65,7 +66,7 @@
           "{options.outputPath}"
         ],
         "options": {
-          "outputPath": "dist",
+          "outputPath": "dist/vitest-marbles",
           "main": "src/index.ts",
           "tsConfig": "tsconfig.lib.json",
           "format": [

@@ -26,4 +26,4 @@ jobs:
       - name: Test
         run: npx nx run-many -t test
       - name: Publish
-        run: npm publish ./dist
+        run: npm publish ./dist/vitest-marbles
