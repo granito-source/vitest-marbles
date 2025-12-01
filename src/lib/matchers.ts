@@ -3,11 +3,13 @@ import { HotObservable } from './rxjs/hot-observable';
 import { Scheduler } from './rxjs/scheduler';
 import { stripAlignmentChars } from './rxjs/strip-alignment-chars';
 import { TestScheduler } from 'rxjs/testing';
+import { Observable } from 'rxjs';
+import { ExpectationResult } from '@vitest/expect';
 
-export type ObservableWithSubscriptions = ColdObservable | HotObservable;
+export type ObservableWithSubscriptions<T> = ColdObservable<T> | HotObservable<T>;
 
 interface CustomMatchers<R = unknown> {
-  toBeObservable(observable: ObservableWithSubscriptions): R;
+  toBeObservable<T>(observable: ObservableWithSubscriptions<T>): R;
 
   toHaveSubscriptions(marbles: string | string[]): R;
 
@@ -23,34 +25,34 @@ declare module 'vitest' {
   }
 }
 
-const dummyResult = {
+const dummyResult: ExpectationResult = {
   pass: true,
   message: () => '',
 };
 
 expect.extend({
-  toHaveSubscriptions(actual: ObservableWithSubscriptions, marbles: string | string[]) {
+  toHaveSubscriptions<T>(actual: ObservableWithSubscriptions<T>, marbles: string | string[]): ExpectationResult {
     const sanitizedMarbles = Array.isArray(marbles) ? marbles.map(stripAlignmentChars) : stripAlignmentChars(marbles);
     Scheduler.get().expectSubscriptions(actual.getSubscriptions()).toBe(sanitizedMarbles);
 
     return dummyResult;
   },
-  toHaveNoSubscriptions(actual: ObservableWithSubscriptions) {
+  toHaveNoSubscriptions<T>(actual: ObservableWithSubscriptions<T>): ExpectationResult {
     Scheduler.get().expectSubscriptions(actual.getSubscriptions()).toBe([]);
 
     return dummyResult;
   },
-  toBeObservable(actual, expected: ObservableWithSubscriptions) {
+  toBeObservable<T>(actual: Observable<T>, expected: ObservableWithSubscriptions<T>): ExpectationResult {
     Scheduler.get().expectObservable(actual).toBe(expected.marbles, expected.values, expected.error);
 
     return dummyResult;
   },
-  toBeMarble(actual: ObservableWithSubscriptions, marbles: string) {
+  toBeMarble<T>(actual: ObservableWithSubscriptions<T>, marbles: string): ExpectationResult {
     Scheduler.get().expectObservable(actual).toBe(stripAlignmentChars(marbles));
 
     return dummyResult;
   },
-  toSatisfyOnFlush(actual: ObservableWithSubscriptions, func: () => void) {
+  toSatisfyOnFlush<T>(actual: ObservableWithSubscriptions<T>, func: () => void): ExpectationResult {
     Scheduler.get().expectObservable(actual);
 
     const flushTests = Scheduler.get()['flushTests'];

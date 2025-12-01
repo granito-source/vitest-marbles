@@ -30,7 +30,7 @@ export class Marblizer {
     return logPoint !== Infinity ? MarblesGlossary.TimeFrame.repeat(logPoint) + symbol : '';
   }
 
-  private static getNotificationEvents(messages: TestMessages) {
+  private static getNotificationEvents(messages: TestMessages): NotificationEvent[] {
     const framesToEmissions = messages.reduce<{ [frame: number]: NotificationEvent }>((result, message) => {
       if (!result[message.frame])
         result[message.frame] = new NotificationEvent(message.frame / frameStep);
@@ -51,7 +51,7 @@ export class Marblizer {
     return events;
   }
 
-  private static extractMarble(message: TestMessages[0]) {
+  private static extractMarble(message: TestMessages[0]): MarblesGlossary | {} {
     let marble = NotificationKindChars[message.notification.kind];
 
     if (marble === ValueLiteral)
@@ -60,7 +60,7 @@ export class Marblizer {
     return marble;
   }
 
-  private static encloseGroupEvents(events: NotificationEvent[]) {
+  private static encloseGroupEvents(events: NotificationEvent[]): void {
     events.forEach(event => {
       if (event.marbles.length > 1)
         event.marbles = `${MarblesGlossary.GroupStart}${event.marbles}${MarblesGlossary.GroupEnd}`;

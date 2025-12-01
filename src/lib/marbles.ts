@@ -4,11 +4,11 @@ import { Scheduler } from './rxjs/scheduler';
 import { stripAlignmentChars } from './rxjs/strip-alignment-chars';
 import { Subscription } from 'rxjs';
 
-export function hot(marbles: string, values?: object, error?: object): HotObservable {
+export function hot<T = string>(marbles: string, values?: Record<string, T>, error?: any): HotObservable<T> {
   return new HotObservable(stripAlignmentChars(marbles), values, error);
 }
 
-export function cold(marbles: string, values?: object, error?: object): ColdObservable {
+export function cold<T = string>(marbles: string, values?: Record<string, T>, error?: any): ColdObservable<T> {
   return new ColdObservable(stripAlignmentChars(marbles), values, error);
 }
 

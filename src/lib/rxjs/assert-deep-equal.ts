@@ -14,7 +14,7 @@ function actualIsSubscriptionsAndExpectedIsEmpty(actual: MessageOrSubscription,
   return expected.length === 0 && actual.length !== 0 && (actual[0] as any).subscribedFrame !== undefined;
 }
 
-export function assertDeepEqual(actual: MessageOrSubscription, expected: MessageOrSubscription) {
+export function assertDeepEqual(actual: MessageOrSubscription, expected: MessageOrSubscription): void {
   if (!expected)
     return;
 

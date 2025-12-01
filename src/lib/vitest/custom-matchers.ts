@@ -106,7 +106,6 @@ export const customTestMatchers: MatchersObject = {
 
 expect.extend(customTestMatchers);
 
-
 declare module 'vitest' {
   interface Matchers<T = any> extends CustomMatchers<T> {
   }

@@ -3,10 +3,10 @@ import { TestScheduler } from 'rxjs/testing';
 import { SubscriptionLog } from './types';
 import { Scheduler } from './scheduler';
 
-export class ColdObservable extends Observable<any> {
+export class ColdObservable<T> extends Observable<T> {
   override source: ReturnType<TestScheduler['createColdObservable']>;
 
-  constructor(public marbles: string, public values?: Record<string, any>, public error?: any) {
+  constructor(public marbles: string, public values?: Record<string, T>, public error?: any) {
     super();
 
     this.source = Scheduler.get().createColdObservable(marbles, values, error);
