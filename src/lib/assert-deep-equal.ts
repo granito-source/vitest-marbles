@@ -1,20 +1,20 @@
 import { SubscriptionLog, TestMessages } from './types';
-import './custom-matchers';
+import './internal-matchers';
 
-export type MessageOrSubscription = TestMessages | SubscriptionLog[];
+export type MessagesOrSubscriptions = TestMessages | SubscriptionLog[];
 
-function expectedIsSubscriptionLogArray(actual: MessageOrSubscription,
-  expected: MessageOrSubscription): expected is SubscriptionLog[] {
+function expectedIsSubscriptionLogArray(actual: MessagesOrSubscriptions,
+  expected: MessagesOrSubscriptions): expected is SubscriptionLog[] {
   return actual.length === 0 && expected.length === 0 ||
     expected.length !== 0 && (expected[0] as any).subscribedFrame !== undefined;
 }
 
-function actualIsSubscriptionsAndExpectedIsEmpty(actual: MessageOrSubscription,
-  expected: MessageOrSubscription): actual is SubscriptionLog[] {
+function actualIsSubscriptionsAndExpectedIsEmpty(actual: MessagesOrSubscriptions,
+  expected: MessagesOrSubscriptions): actual is SubscriptionLog[] {
   return expected.length === 0 && actual.length !== 0 && (actual[0] as any).subscribedFrame !== undefined;
 }
 
-export function assertDeepEqual(actual: MessageOrSubscription, expected: MessageOrSubscription): void {
+export function assertDeepEqual(actual: MessagesOrSubscriptions, expected: MessagesOrSubscriptions): void {
   if (!expected)
     return;
 

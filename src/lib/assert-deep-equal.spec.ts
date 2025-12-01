@@ -1,22 +1,22 @@
 import { assertDeepEqual } from './assert-deep-equal';
 
-const vitestExpect = expect;
+const realExpect = expect;
 
-const matchersMock = {
+const matchers = {
   toBeSubscriptions: vi.fn(),
   toBeNotifications: vi.fn(),
   toHaveEmptySubscriptions: vi.fn(),
 };
 
-const expectMock = vi.fn(() => matchersMock);
+const expectMock = vi.fn(() => matchers);
 
 expect = expectMock as any;
 
 describe('assertDeepEqual()', () => {
   beforeEach(() => {
-    matchersMock.toBeNotifications.mockClear();
-    matchersMock.toBeSubscriptions.mockClear();
-    matchersMock.toHaveEmptySubscriptions.mockClear();
+    matchers.toBeNotifications.mockClear();
+    matchers.toBeSubscriptions.mockClear();
+    matchers.toHaveEmptySubscriptions.mockClear();
   });
 
   it('calls subscriptions matcher if received arrays of subscriptions', () => {
@@ -31,7 +31,7 @@ describe('assertDeepEqual()', () => {
       ]
     );
 
-    vitestExpect(matchersMock.toBeSubscriptions).toHaveBeenCalledTimes(1);
+    realExpect(matchers.toBeSubscriptions).toHaveBeenCalledTimes(1);
   });
 
   it('calls subscriptions matcher if actual is empty array and expected is array of subscriptions', () => {
@@ -43,7 +43,7 @@ describe('assertDeepEqual()', () => {
       ]
     );
 
-    vitestExpect(matchersMock.toBeSubscriptions).toHaveBeenCalledTimes(1);
+    realExpect(matchers.toBeSubscriptions).toHaveBeenCalledTimes(1);
   });
 
   it('calls notifications matcher if received arrays of notifications', () => {
@@ -58,7 +58,7 @@ describe('assertDeepEqual()', () => {
       ]
     );
 
-    vitestExpect(matchersMock.toBeNotifications).toHaveBeenCalledTimes(1);
+    realExpect(matchers.toBeNotifications).toHaveBeenCalledTimes(1);
   });
 
   it('calls notifications matcher when the actual is empty array and expected is array of notifications', () => {
@@ -70,7 +70,7 @@ describe('assertDeepEqual()', () => {
       ]
     );
 
-    vitestExpect(matchersMock.toBeNotifications).toHaveBeenCalledTimes(1);
+    realExpect(matchers.toBeNotifications).toHaveBeenCalledTimes(1);
   });
 
   it('calls notifications matcher when expected is empty array and actual is array of notifications', () => {
@@ -82,7 +82,7 @@ describe('assertDeepEqual()', () => {
       []
     );
 
-    vitestExpect(matchersMock.toBeNotifications).toHaveBeenCalledTimes(1);
+    realExpect(matchers.toBeNotifications).toHaveBeenCalledTimes(1);
   });
 
   it('calls empty subscriptions matcher if expected array is empty and actual array is array of subscriptions', () => {
@@ -93,6 +93,6 @@ describe('assertDeepEqual()', () => {
       []
     );
 
-    vitestExpect(matchersMock.toHaveEmptySubscriptions).toHaveBeenCalledTimes(1);
+    realExpect(matchers.toHaveEmptySubscriptions).toHaveBeenCalledTimes(1);
   });
 });

@@ -2,7 +2,7 @@ import { SubscriptionLog, TestMessages } from './types';
 import { Marblizer } from './marblizer';
 import { ExpectationResult, MatchersObject } from '@vitest/expect';
 
-interface CustomMatchers<R = unknown> {
+interface InternalMatchers<R = unknown> {
   toBeNotifications: (messages: TestMessages) => R;
 
   toBeSubscriptions: (subscriptions: SubscriptionLog[]) => R;
@@ -10,7 +10,7 @@ interface CustomMatchers<R = unknown> {
   toHaveEmptySubscriptions: () => R;
 }
 
-export const customTestMatchers: MatchersObject = {
+export const internalMatchers: MatchersObject = {
   toBeNotifications(actual: TestMessages, expected: TestMessages): ExpectationResult {
     let actualMarble: string | TestMessages = actual;
     let expectedMarble: string | TestMessages = expected;
@@ -104,14 +104,14 @@ export const customTestMatchers: MatchersObject = {
   }
 }
 
-expect.extend(customTestMatchers);
+expect.extend(internalMatchers);
 
 declare module 'vitest' {
-  interface Matchers<T = any> extends CustomMatchers<T> {
+  interface Matchers<T = any> extends InternalMatchers<T> {
   }
 }
 
-function canMarblize(...messages: TestMessages[]) {
+function canMarblize(...messages: TestMessages[]): boolean {
   return messages.every(isMessagesMarblizable);
 }
 
@@ -129,15 +129,12 @@ function isCharacter(value: any): boolean {
 }
 
 function subscriptionsPass(actualMarbleArray: string[], expectedMarbleArray: string[]): boolean {
-  if (actualMarbleArray.length !== expectedMarbleArray.length) {
+  if (actualMarbleArray.length !== expectedMarbleArray.length)
     return false;
-  }
-  let pass = true;
-  for (const actualMarble of actualMarbleArray) {
-    if (!expectedMarbleArray.includes(actualMarble)) {
-      pass = false;
-      break;
-    }
-  }
-  return pass;
+
+  for (const actualMarble of actualMarbleArray)
+    if (!expectedMarbleArray.includes(actualMarble))
+      return false;
+
+  return true;
 }
