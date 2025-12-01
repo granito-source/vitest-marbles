@@ -1,4 +1,4 @@
-import { Marblizer } from '../marblizer';
+import { Marblizer } from './marblizer';
 import { customTestMatchers } from './custom-matchers';
 import { MatcherState, SyncExpectationResult } from '@vitest/expect';
 

@@ -1,5 +1,5 @@
 import { SubscriptionLog, TestMessages } from './types';
-import '../vitest/custom-matchers';
+import './custom-matchers';
 
 export type MessageOrSubscription = TestMessages | SubscriptionLog[];
 

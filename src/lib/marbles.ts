@@ -1,7 +1,7 @@
-import { Scheduler } from './rxjs/scheduler';
-import { stripAlignmentChars } from './rxjs/strip-alignment-chars';
+import { Scheduler } from './scheduler';
+import { stripAlignmentChars } from './strip-alignment-chars';
 import { Subscription } from 'rxjs';
-import { ColdObservable, HotObservable } from './rxjs/types';
+import { ColdObservable, HotObservable } from './types';
 
 export function cold<T = string>(marbles: string, values?: Record<string, T>, error?: any): ColdObservable<T> {
   return Scheduler.get().createColdObservable(stripAlignmentChars(marbles), values, error);

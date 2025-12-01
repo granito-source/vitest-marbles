@@ -1,4 +1,4 @@
-import { SubscriptionLog, TestMessages } from './rxjs/types';
+import { SubscriptionLog, TestMessages } from './types';
 import { Marblizer } from './marblizer';
 
 describe('Marblizer', () => {

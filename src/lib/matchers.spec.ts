@@ -1,7 +1,7 @@
 import { cold, hot, schedule, time } from './marbles';
 import './matchers';
 import { concat, delay, map, merge, Subject, switchAll, switchMap, tap, timer } from 'rxjs';
-import { Scheduler } from './rxjs/scheduler';
+import { Scheduler } from './scheduler';
 
 describe('toBeMarble()', () => {
   it('concatenates two cold observables into single cold observable', () => {

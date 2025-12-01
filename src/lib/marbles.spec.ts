@@ -1,7 +1,7 @@
 import { hot, time } from './marbles';
 import './matchers';
 import { map, timer } from 'rxjs';
-import { Scheduler } from './rxjs/scheduler';
+import { Scheduler } from './scheduler';
 
 describe('time()', () => {
   it('delays the emission by provided timeout with provided scheduler', () => {

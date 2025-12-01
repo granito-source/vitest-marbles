@@ -1,9 +1,9 @@
-import { Scheduler } from './rxjs/scheduler';
-import { stripAlignmentChars } from './rxjs/strip-alignment-chars';
+import { Scheduler } from './scheduler';
+import { stripAlignmentChars } from './strip-alignment-chars';
 import { TestScheduler } from 'rxjs/testing';
 import { Observable } from 'rxjs';
 import { ExpectationResult } from '@vitest/expect';
-import { TestObservable } from './rxjs/types';
+import { TestObservable } from './types';
 
 interface CustomMatchers<R = unknown> {
   toBeObservable<T>(observable: Observable<T>): R;

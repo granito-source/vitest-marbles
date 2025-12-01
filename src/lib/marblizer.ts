@@ -1,4 +1,4 @@
-import { SubscriptionLog, TestMessages } from './rxjs/types';
+import { SubscriptionLog, TestMessages } from './types';
 import { MarblesGlossary } from './marbles-glossary';
 import { NotificationEvent } from './notification-event';
 import { NotificationKindChars, ValueLiteral } from './notification-kind';

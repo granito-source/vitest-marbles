@@ -1,5 +1,5 @@
-import { SubscriptionLog, TestMessages } from '../rxjs/types';
-import { Marblizer } from '../marblizer';
+import { SubscriptionLog, TestMessages } from './types';
+import { Marblizer } from './marblizer';
 import { ExpectationResult, MatchersObject } from '@vitest/expect';
 
 interface CustomMatchers<R = unknown> {
