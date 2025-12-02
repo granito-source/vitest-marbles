@@ -5,13 +5,13 @@ import { ExpectationResult } from '@vitest/expect';
 import { TestObservable } from './types';
 
 interface CustomMatchers<R = unknown> {
-  toBeObservable<T>(observable: Observable<T>): R;
+  toBeObservable<T>(observable: Observable<T>, subscription?: string): R;
 
   toHaveSubscriptions(marbles: string | string[]): R;
 
   toHaveNoSubscriptions(): R;
 
-  toBeMarble(marble: string): R;
+  toBeMarble<T = string>(marbles: string, values?: Record<string, T>, error?: any): R;
 
   toSatisfyOnFlush(func: () => void): R;
 }
@@ -39,13 +39,13 @@ expect.extend({
 
     return dummyResult;
   },
-  toBeObservable<T>(actual: Observable<T>, expected: Observable<T>): ExpectationResult {
-    Scheduler.get().expectObservable(actual).toEqual(expected);
+  toBeObservable<T>(actual: Observable<T>, expected: Observable<T>, subscription?: string): ExpectationResult {
+    Scheduler.get().expectObservable(actual, subscription).toEqual(expected);
 
     return dummyResult;
   },
-  toBeMarble<T>(actual: Observable<T>, marbles: string): ExpectationResult {
-    Scheduler.get().expectObservable(actual).toBe(marbles.trim());
+  toBeMarble<T>(actual: Observable<T>, marbles: string, values?: Record<string, T>, error?: any): ExpectationResult {
+    Scheduler.get().expectObservable(actual).toBe(marbles.trim(), values, error);
 
     return dummyResult;
   },

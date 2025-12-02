@@ -1,229 +1,167 @@
-import { cold, hot, schedule, time } from './marbles';
+import { cold, hot, schedule } from './marbles';
 import './matchers';
-import { concat, delay, map, merge, Subject, switchAll, switchMap, tap, timer } from 'rxjs';
+import { Subject, switchAll } from 'rxjs';
 import { Scheduler } from './scheduler';
 
-describe('toBeMarble()', () => {
-  it('concatenates two cold observables into single cold observable', () => {
-    const a$ = cold('-a-|');
-    const b$ = cold('-b-|');
-    const expected = '-a--b-|';
+describe('Matchers', () => {
+  const error = new Error('error');
 
-    expect(concat(a$, b$)).toBeMarble(expected);
+  it('initializes Scheduler', () => {
+    expect(() => Scheduler.get()).not.toThrowError();
   });
 
-  it('merges two hot observables and start emitting from the subscription point', () => {
-    const e1$ = hot('----a--^--b-------c--|');
-    const e2$ = hot('---d-^--e---------f-----|');
-    const expected = '---(be)----c-f-----|';
+  describe('#toHaveSubscriptions()', () => {
+    it('matches single subscription points', () => {
+      const x = cold('           --a---b---c--|');
+      const y = cold('                   ---d--e---f---|');
+      const control = hot('------x-------y------|', { x, y });
+      const xSubs = '      ------^-------!';
+      const ySubs = '      --------------^-------------!';
 
-    expect(merge(e1$, e2$)).toBeMarble(expected);
+      control.pipe(switchAll()).subscribe();
+
+      expect(x).toHaveSubscriptions(xSubs);
+      expect(y).toHaveSubscriptions(ySubs);
+    });
+
+    it('matches multiple subscription points', () => {
+      const x = cold('           --a---b---c--|');
+      //                             --a---b---c--|
+      //                      --a---b---c--|
+      const control1 = cold('----x---x|', { x });
+      const control2 = cold('-x|', { x });
+      const subs1 = '        ----^---!';
+      const subs2 = '        --------^------------!';
+      const subs3 = '        -^------------!';
+
+      control1.pipe(switchAll()).subscribe();
+      control2.pipe(switchAll()).subscribe();
+
+      expect(x).toHaveSubscriptions([subs1, subs2, subs3]);
+    });
+
+    it('matches no subscriptions', () => {
+      expect(cold('---a')).toHaveSubscriptions([]);
+    });
   });
 
-  it('delays the emission by provided timeout with provided scheduler', () => {
-    const delay$ = time('-----a|');
-    const provided$ = timer(delay$, Scheduler.get()).pipe(map(() => 'a'));
-    const expected = '------(a|)';
-
-    expect(provided$).toBeMarble(expected);
+  describe('#toHaveNoSubscriptions()', () => {
+    it('matches no subscriptions', () => {
+      expect(cold('---a')).toHaveNoSubscriptions();
+    });
   });
 
-  it('ignores whitespace to allow vertical alignment', () => {
-    const hotInput$ = hot('   --a|');
-    const coldInput$ = cold(' --a|');
-    const expected = '        --a|';
+  describe('#toBeObservable()', () => {
+    it('matches actual test observable with expected test observable', () => {
+      expect(cold('--a-(bc)')).toBeObservable(cold('--a-(bc)'));
+      expect(cold('--a-(bc)')).toBeObservable(hot('--a-(bc)'));
+      expect(hot('--a-(bc)')).toBeObservable(cold('--a-(bc)'));
+      expect(hot('--a-(bc)')).toBeObservable(hot('--a-(bc)'));
+    });
 
-    expect(hotInput$).toBeMarble(expected);
-    expect(coldInput$).toBeMarble(expected);
-  });
-});
+    it('matches actual test with values with expected test observable', () => {
+      expect(cold('--a-', { a: 42 })).toBeObservable(cold('--a-', { a: 42 }));
+      expect(cold('--a-', { a: 42 })).toBeObservable(hot('--a-', { a: 42 }));
+      expect(hot('--a-', { a: 42 })).toBeObservable(cold('--a-', { a: 42 }));
+      expect(hot('--a-', { a: 42 })).toBeObservable(hot('--a-', { a: 42 }));
+    });
 
-describe('toBeObservable()', () => {
-  it('concatenates two cold observables into single cold observable', () => {
-    const a$ = cold('-a-|', { a: 0 });
-    const b$ = cold('-b-|', { b: 1 });
-    const expected = cold('-a--b-|', { a: 0, b: 1 });
+    it('matches actual completed test with expected test observable', () => {
+      expect(cold('--a-|')).toBeObservable(cold('--a-|'));
+      expect(cold('--a-|')).toBeObservable(hot('--a-|'));
+      expect(hot('--a-|')).toBeObservable(cold('--a-|'));
+      expect(hot('--a-|')).toBeObservable(hot('--a-|'));
+    });
 
-    expect(concat(a$, b$)).toBeObservable(expected);
-  });
+    it('matches actual errored out test observable with expected test observable', () => {
+      expect(cold('--a-#', undefined, error)).toBeObservable(cold('--a-#', undefined, error));
+      expect(cold('--a-#', undefined, error)).toBeObservable(hot('--a-#', undefined, error));
+      expect(hot('--a-#', undefined, error)).toBeObservable(cold('--a-#', undefined, error));
+      expect(hot('--a-#', undefined, error)).toBeObservable(hot('--a-#', undefined, error));
+    });
 
-  it('works for value objects', () => {
-    const valueObject = { foo: 'bar' };
-    const a$ = cold('-a-|', { a: valueObject });
-    const expected = cold('-a-|', { a: valueObject });
+    it('matches actual real observable with expected test observable', () => {
+      const actual = new Subject<string>();
 
-    expect(a$).toBeObservable(expected);
-  });
+      schedule(() => actual.next('a'), 20);
+      schedule(() => actual.next('b'), 60);
+      schedule(() => actual.complete(), 70);
 
-  it('works for multi-character literals', () => {
-    const falses$ = cold('--a-----b-----|');
-    const trues$ = cold('-----a-----b--|');
-    const expected = cold('--f--t--f--t--|', { t: true, f: false });
-    const mapped = merge(falses$.pipe(map(() => false)), trues$.pipe(map(() => true)));
+      expect(actual).toBeObservable(cold('--a---b|'));
+      expect(actual).toBeObservable(hot('--a---b|'));
+    });
 
-    expect(mapped).toBeObservable(expected);
-  });
+    it('matches actual test observable with expected real observable', () => {
+      const expected = new Subject<string>();
 
-  it('works for mixed literals', () => {
-    const falses$ = cold('--a-----a-----|', { a: false });
-    const trues$ = cold('-----b-----b--|', { b: true });
-    const characters$ = cold('-------------c-|');
-    const expected = cold('--f--t--f--t-c-|', { t: true, f: false, c: 'c' });
-    const mapped = merge(falses$, trues$, characters$);
+      schedule(() => expected.next('a'), 20);
+      schedule(() => expected.next('b'), 60);
+      schedule(() => expected.complete(), 70);
 
-    expect(mapped).toBeObservable(expected);
-  });
+      expect(cold('--a---b|')).toBeObservable(expected);
+      expect(hot('--a---b|')).toBeObservable(expected);
+    });
 
-  it('works with undefined values', () => {
-    const values$ = cold('u|', { u: undefined });
-    const expected = cold('u|', { u: undefined });
+    it('matches with observable and subscription', () => {
+      // matches on 'de'
+      expect(hot('abc^de')).toBeObservable(hot('cdefg'), '-^-!');
+      expect(hot('abc^de')).toBeObservable(cold('defg'), '-^-!');
+    });
 
-    expect(values$).toBeObservable(expected);
-  });
+    it('allows using matchers for values', () => {
+      let actual = cold('--a-', {
+        a: {
+          answer: 42,
+          question: undefined
+        }
+      });
 
-  it('merges two hot observables and start emitting from the subscription point', () => {
-    const e1 = hot('----a--^--b-------c--|');
-    const e2 = hot('---d-^--e---------f-----|');
-    const expected = cold('---(be)----c-f-----|');
-
-    expect(merge(e1, e2)).toBeObservable(expected);
-  });
-
-  it('delays the emission by provided timeout with provided scheduler', () => {
-    const delay = time('-----d|');
-    const provided = timer(delay, Scheduler.get()).pipe(map(() => 0));
-    const expected = hot('------(d|)', { d: 0 });
-
-    expect(provided).toBeObservable(expected);
-  });
-
-  it('ignores whitespace to allow vertical alignment', () => {
-    const hotInput = hot('  ---^--a|');
-    const coldInput = cold('   ---a|');
-    const expected = cold('    ---a|');
-
-    expect(hotInput).toBeObservable(expected);
-    expect(coldInput).toBeObservable(expected);
+      expect(actual).toBeObservable(cold('--a-', {
+        a: expect.objectContaining({ answer: 42 })
+      }));
+    });
   });
 
-  it('works with asymmetric matchers', () => {
-    const e$ = hot('-a', { a: { someprop: 'hey', x: { y: 1, z: 2 }, blah: '3' } });
+  describe('#toBeMarble()', () => {
+    it('matches marble observables', () => {
+      expect(cold('--a-b--c')).toBeMarble('--a-b--c');
+      expect(hot('--a-b--c')).toBeMarble('--a-b--c');
+    });
 
-    expect(e$).toBeObservable(
-      cold('-b', {
-        b: expect.objectContaining({
-          x: expect.objectContaining({
-            y: 1,
-          }),
-          blah: '3',
-        }),
-      })
-    );
+    it('matches observables with values', () => {
+      expect(cold('--a-', { a: 42 })).toBeMarble('--a-', { a: 42 });
+      expect(hot('--a-', { a: 42 })).toBeMarble('--a-', { a: 42 });
+    });
+
+    it('matches terminated observables', () => {
+      expect(cold('--(ab)--|')).toBeMarble('--(ab)--|');
+      expect(hot('--(ab)--|')).toBeMarble('--(ab)--|');
+    });
+
+    it('matches errored out observables', () => {
+      expect(cold('--a-#', undefined, error)).toBeMarble('--a-#', undefined, error);
+      expect(hot('--a-#', undefined, error)).toBeMarble('--a-#', undefined, error);
+    });
+
+    it('trims whitespace from expected marbles', () => {
+      expect(cold('--a-')).toBeMarble('  --a- ');
+    });
   });
 
-  it('works with schedule()', () => {
-    const source = new Subject<string>();
+  describe('#toSatisfyOnFlush()', () => {
+    it('checks expectations after scheduler is flushed', () => {
+      const func = vi.fn();
 
-    schedule(() => source.next('a'), 1);
-    schedule(() => source.next('b'), 2);
+      cold('--a-b-c').subscribe(func);
+      schedule(() => func('d'), 100);
 
-    const expected = cold('ab');
-
-    expect(source).toBeObservable(expected);
-  });
-
-  it('works with delays', () => {
-    const source = cold('a');
-    const expected = cold('--a');
-
-    expect(source.pipe(delay(20))).toBeObservable(expected);
-  });
-
-  it('passes if the two objects have the same properties but in different order', () => {
-    const e$ = hot('-a', { a: { someprop: 'hey', b: 1 } });
-
-    expect(e$).toBeObservable(cold('-b', { b: { b: 1, someprop: 'hey' } }));
-  });
-
-  it('Should work with cold observables created during assertion execution', () => {
-    const source = cold('a').pipe(switchMap(() => cold('--a')));
-    const expected = cold('--a');
-
-    expect(source).toBeObservable(expected);
-  });
-
-  // TODO: uncomment once .not.toBeObservable works
-  // it('fails on different errors', () => {
-  //   expect(cold('#', {}, 'A')).not.toBeObservable(cold('#', {}, 'B'))
-  // })
-});
-
-describe('toHaveSubscriptions()', () => {
-  it('figures out single subscription points', () => {
-    const x = cold('--a---b---c--|');
-    const xsubs = '------^-------!';
-    const y = cold('---d--e---f---|');
-    const ysubs = '--------------^-------------!';
-    const e1 = hot('------x-------y------|', { x, y });
-    const expected = cold('--------a---b----d--e---f---|');
-
-    expect(e1.pipe(switchAll())).toBeObservable(expected);
-    expect(x).toHaveSubscriptions(xsubs);
-    expect(y).toHaveSubscriptions(ysubs);
-  });
-
-  it('figures out multiple subscription points', () => {
-    const x = cold('--a---b---c--|');
-
-    const y = cold('----x---x|', { x });
-    const ySubscription1 = '----^---!';
-    //                                     '--a---b---c--|'
-    const ySubscription2 = '--------^------------!';
-    const expectedY = cold('------a---a---b---c--|');
-
-    const z = cold('-x|', { x });
-    //                                 '--a---b---c--|'
-    const zSubscription = '-^------------!';
-    const expectedZ = cold('---a---b---c--|');
-
-    expect(y.pipe(switchAll())).toBeObservable(expectedY);
-    expect(z.pipe(switchAll())).toBeObservable(expectedZ);
-
-    expect(x).toHaveSubscriptions([ySubscription1, ySubscription2, zSubscription]);
-  });
-
-  it('verifies that switchMap was not performed due to an error', () => {
-    const x = cold('--a---b---c--|');
-    const y = cold('---#-x--', { x });
-    const result = y.pipe(switchAll());
-
-    expect(result).toBeMarble('---#');
-    expect(x).toHaveNoSubscriptions();
-  });
-
-  // it('Should verify that there is at least one subscription', () => {
-  //   const x = cold('--a---b---c--|');
-  //   expect(x).not.toHaveNoSubscriptions();
-  // });
-
-  it('ignores whitespace to allow vertical alignment', () => {
-    const x = hot('          -----a|');
-    const expected = '       -----a|';
-    const xSubscription = '  ^-----!';
-
-    expect(x).toBeMarble(expected);
-    expect(x).toHaveSubscriptions(xSubscription);
-    expect(x).toHaveSubscriptions([xSubscription]);
-  });
-});
-
-describe('toSatisfyOnFlush()', () => {
-  it('should verify mock has been called', () => {
-    const mock = vi.fn();
-    const stream$ = cold('blah|').pipe(tap(mock));
-
-    expect(stream$).toSatisfyOnFlush(() => {
-      expect(mock).toHaveBeenCalledTimes(4);
+      expect(cold('')).toSatisfyOnFlush(() => {
+        expect(func).toHaveBeenCalledTimes(4);
+        expect(func).toHaveBeenCalledWith('a');
+        expect(func).toHaveBeenCalledWith('b');
+        expect(func).toHaveBeenCalledWith('c');
+        expect(func).toHaveBeenCalledWith('d');
+      });
     });
   });
 });
