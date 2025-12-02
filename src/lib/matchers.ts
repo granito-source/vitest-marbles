@@ -1,5 +1,4 @@
 import { Scheduler } from './scheduler';
-import { stripAlignmentChars } from './strip-alignment-chars';
 import { TestScheduler } from 'rxjs/testing';
 import { Observable } from 'rxjs';
 import { ExpectationResult } from '@vitest/expect';
@@ -29,7 +28,8 @@ const dummyResult: ExpectationResult = {
 
 expect.extend({
   toHaveSubscriptions<T>(actual: TestObservable<T>, marbles: string | string[]): ExpectationResult {
-    const sanitizedMarbles = Array.isArray(marbles) ? marbles.map(stripAlignmentChars) : stripAlignmentChars(marbles);
+    const sanitizedMarbles = Array.isArray(marbles) ? marbles.map(m => m.trim()) : marbles.trim();
+
     Scheduler.get().expectSubscriptions(actual.subscriptions).toBe(sanitizedMarbles);
 
     return dummyResult;
@@ -45,7 +45,7 @@ expect.extend({
     return dummyResult;
   },
   toBeMarble<T>(actual: Observable<T>, marbles: string): ExpectationResult {
-    Scheduler.get().expectObservable(actual).toBe(stripAlignmentChars(marbles));
+    Scheduler.get().expectObservable(actual).toBe(marbles.trim());
 
     return dummyResult;
   },
