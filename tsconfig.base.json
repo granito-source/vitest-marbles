@@ -1,7 +1,6 @@
 {
   "compilerOptions": {
     "composite": true,
-    "declarationMap": true,
     "emitDeclarationOnly": true,
     "importHelpers": true,
     "isolatedModules": true,
