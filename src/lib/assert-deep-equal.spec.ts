@@ -1,98 +1,94 @@
 import { assertDeepEqual } from './assert-deep-equal';
-
-const realExpect = expect;
-
-const matchers = {
-  toBeSubscriptions: vi.fn(),
-  toBeNotifications: vi.fn(),
-  toHaveEmptySubscriptions: vi.fn(),
-};
-
-const expectMock = vi.fn(() => matchers);
-
-expect = expectMock as any;
+import { SubscriptionLog, TestMessages } from './types';
 
 describe('assertDeepEqual()', () => {
-  beforeEach(() => {
-    matchers.toBeNotifications.mockClear();
-    matchers.toBeSubscriptions.mockClear();
-    matchers.toHaveEmptySubscriptions.mockClear();
+  const subscriptions: SubscriptionLog[] = [
+    { subscribedFrame: 10, unsubscribedFrame: 30 },
+    { subscribedFrame: 50, unsubscribedFrame: Infinity }
+  ];
+
+  const messages: TestMessages = [
+    { frame: 20, notification: { kind: 'N', value: 'b' } },
+    { frame: 50, notification: { kind: 'N', value: 'e' } }
+  ];
+
+  it('returns normally when expected is undefined', () => {
+    expect(() => assertDeepEqual([], undefined)).not.toThrowError();
+    expect(() => assertDeepEqual(messages, undefined)).not.toThrowError();
+    expect(() => assertDeepEqual(subscriptions, undefined)).not.toThrowError();
   });
 
-  it('calls subscriptions matcher if received arrays of subscriptions', () => {
-    assertDeepEqual(
-      [
-        { subscribedFrame: 30, unsubscribedFrame: 60 },
-        { subscribedFrame: 10, unsubscribedFrame: 50 },
-      ],
-      [
-        { subscribedFrame: 30, unsubscribedFrame: 60 },
-        { subscribedFrame: 10, unsubscribedFrame: 50 },
-      ]
-    );
-
-    realExpect(matchers.toBeSubscriptions).toHaveBeenCalledTimes(1);
+  it('returns normally when expected and actual are empty', () => {
+    expect(() => assertDeepEqual([], [])).not.toThrowError();
   });
 
-  it('calls subscriptions matcher if actual is empty array and expected is array of subscriptions', () => {
-    assertDeepEqual(
-      [],
-      [
-        { subscribedFrame: 30, unsubscribedFrame: 60 },
-        { subscribedFrame: 10, unsubscribedFrame: 50 },
-      ]
-    );
-
-    realExpect(matchers.toBeSubscriptions).toHaveBeenCalledTimes(1);
+  it('returns normally when the same subscriptions', () => {
+    expect(() => assertDeepEqual(subscriptions, subscriptions)).not.toThrowError();
   });
 
-  it('calls notifications matcher if received arrays of notifications', () => {
-    assertDeepEqual(
-      [
-        { frame: 30, notification: { kind: 'N', value: 'b' } },
-        { frame: 110, notification: { kind: 'N', value: 'e' } },
-      ],
-      [
-        { frame: 30, notification: { kind: 'N', value: 'b' } },
-        { frame: 110, notification: { kind: 'N', value: 'e' } },
-      ]
-    );
-
-    realExpect(matchers.toBeNotifications).toHaveBeenCalledTimes(1);
+  it('throws error when actual subscriptions but expected is empty', () => {
+    expect(() => assertDeepEqual(subscriptions, [])).toThrowError(expect.toSatisfy(e =>
+      /Expected observable to have no subscription points.*But got:.*"-\^-!".*"-----\^"/s.test(e.message)));
   });
 
-  it('calls notifications matcher when the actual is empty array and expected is array of notifications', () => {
-    assertDeepEqual(
-      [],
-      [
-        { frame: 30, notification: { kind: 'N', value: 'b' } },
-        { frame: 110, notification: { kind: 'N', value: 'e' } },
-      ]
-    );
-
-    realExpect(matchers.toBeNotifications).toHaveBeenCalledTimes(1);
+  it('throws error when actual is empty but expected subscriptions', () => {
+    expect(() => assertDeepEqual([], subscriptions)).toThrowError(expect.toSatisfy(e =>
+      /Expected observable to have the following subscription points:.*"-\^-!".*"-----\^".*But got:.*\[]/s.test(e.message)));
   });
 
-  it('calls notifications matcher when expected is empty array and actual is array of notifications', () => {
-    assertDeepEqual(
-      [
-        { frame: 30, notification: { kind: 'N', value: 'b' } },
-        { frame: 110, notification: { kind: 'N', value: 'e' } },
-      ],
-      []
-    );
+  it('throws error when actual and expected subscriptions have different length', () => {
+    const actual = [
+      { subscribedFrame: 0, unsubscribedFrame: 20 },
+      ...subscriptions
+    ];
 
-    realExpect(matchers.toBeNotifications).toHaveBeenCalledTimes(1);
+    expect(() => assertDeepEqual(actual, subscriptions)).toThrowError(expect.toSatisfy(e =>
+      /Expected observable to have the following subscription points:.*"-\^-!".*"-----\^".*But got:.*"\^-!".*"-\^-!".*"-----\^".*Difference:/s.test(e.message)));
   });
 
-  it('calls empty subscriptions matcher if expected array is empty and actual array is array of subscriptions', () => {
-    assertDeepEqual(
-      [
-        { subscribedFrame: 30, unsubscribedFrame: 60 }
-      ],
-      []
-    );
+  it('throws error when actual and expected subscriptions do not match', () => {
+    const actual = [
+      { subscribedFrame: 0, unsubscribedFrame: 20 },
+      { subscribedFrame: 50, unsubscribedFrame: Infinity }
+    ];
 
-    realExpect(matchers.toHaveEmptySubscriptions).toHaveBeenCalledTimes(1);
+    expect(() => assertDeepEqual(actual, subscriptions)).toThrowError(expect.toSatisfy(e =>
+      /Expected observable to have the following subscription points:.*"-\^-!".*"-----\^".*But got:.*"\^-!".*"-----\^".*Difference:/s.test(e.message)));
+  });
+
+  it('returns normally when the same messages', () => {
+    expect(() => assertDeepEqual(messages, messages)).not.toThrowError();
+  });
+
+  it('throws error when actual messages but expected is empty', () => {
+    expect(() => assertDeepEqual(messages, [])).toThrowError(expect.toSatisfy(e =>
+      /Expected notifications to be:.*"".*But got:.*"--b--e".*Difference:/s.test(e.message)));
+  });
+
+  it('throws error when actual empty but expected messages', () => {
+    expect(() => assertDeepEqual([], messages)).toThrowError(expect.toSatisfy(e =>
+      /Expected notifications to be:.*"--b--e".*But got:.*"".*Difference:/s.test(e.message)));
+  });
+
+  it('throws error when actual and expected messages are different', () => {
+    const actual: TestMessages = [
+      ...messages,
+      { frame: 60, notification: { kind: 'C' }}
+    ];
+
+    expect(() => assertDeepEqual(actual, messages)).toThrowError(expect.toSatisfy(e =>
+      /Expected notifications to be:.*"--b--e".*But got:.*"--b--e\|".*Difference:/s.test(e.message)));
+  });
+
+  it('throws error when actual and expected messages have different values', () => {
+    const actual: TestMessages = [
+      { frame: 20, notification: { kind: 'N', value: 43 } }
+    ];
+    const expected: TestMessages = [
+      { frame: 20, notification: { kind: 'N', value: 42 } }
+    ];
+
+    expect(() => assertDeepEqual(actual, expected)).toThrowError(expect.toSatisfy(e =>
+      /Expected notifications to be:.*Array \[.*"value": 42.*But got:.*Array \[.*"value": 43.*Difference/s.test(e.message)));
   });
 });

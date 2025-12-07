@@ -1,9 +1,8 @@
 import { Scheduler } from './scheduler';
-import { expect } from 'vitest';
 import { TestScheduler } from 'rxjs/testing';
 
 describe('Scheduler', () => {
-  afterEach(() => Scheduler.init());
+  afterEach(() => Scheduler.reset());
 
   it('provides TestScheduler when initialized', () => {
     Scheduler.init();

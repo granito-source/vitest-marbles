@@ -21,7 +21,7 @@ declare module 'vitest' {
   }
 }
 
-const dummyResult: ExpectationResult = {
+const success: ExpectationResult = {
   pass: true,
   message: () => ''
 };
@@ -32,22 +32,22 @@ expect.extend({
 
     Scheduler.get().expectSubscriptions(actual.subscriptions).toBe(sanitizedMarbles);
 
-    return dummyResult;
+    return success;
   },
   toHaveNoSubscriptions<T>(actual: TestObservable<T>): ExpectationResult {
     Scheduler.get().expectSubscriptions(actual.subscriptions).toBe([]);
 
-    return dummyResult;
+    return success;
   },
   toBeObservable<T>(actual: Observable<T>, expected: Observable<T>, subscription?: string): ExpectationResult {
     Scheduler.get().expectObservable(actual, subscription).toEqual(expected);
 
-    return dummyResult;
+    return success;
   },
   toBeMarble<T>(actual: Observable<T>, marbles: string, values?: Record<string, T>, error?: any): ExpectationResult {
     Scheduler.get().expectObservable(actual).toBe(marbles.trim(), values, error);
 
-    return dummyResult;
+    return success;
   },
   toSatisfyOnFlush<T>(actual: Observable<T>, func: () => void): ExpectationResult {
     Scheduler.get().expectObservable(actual);
@@ -57,7 +57,7 @@ expect.extend({
     flushTests[flushTests.length - 1].ready = true;
     onFlush.push(func);
 
-    return dummyResult;
+    return success;
   }
 });
 

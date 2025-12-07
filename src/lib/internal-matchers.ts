@@ -21,27 +21,28 @@ export const internalMatchers: MatchersObject = {
     }
 
     const pass = this.equals(actualMarble, expectedMarble);
-    const message = pass ? () =>
-      this.utils.matcherHint('.not.toBeNotifications') +
+    const message = pass ?
+      () => this.utils.matcherHint('.not.toBeNotifications') +
       '\n\n' +
       `Expected notifications to not be:\n` +
       `  ${this.utils.printExpected(expectedMarble)}\n` +
       `But got:\n` +
-      `  ${this.utils.printReceived(actualMarble)}` : () => {
-      const diffString = this.utils.diff(expectedMarble, actualMarble, {
-        expand: true,
-      });
+      `  ${this.utils.printReceived(actualMarble)}` :
+      () => {
+        const diffString = this.utils.diff(expectedMarble, actualMarble, {
+          expand: true,
+        });
 
-      return (
-        this.utils.matcherHint('.toBeNotifications') +
-        '\n\n' +
-        `Expected notifications to be:\n` +
-        `  ${this.utils.printExpected(expectedMarble)}\n` +
-        `But got:\n` +
-        `  ${this.utils.printReceived(actualMarble)}` +
-        (diffString ? `\n\nDifference:\n\n${diffString}` : '')
-      );
-    };
+        return (
+          this.utils.matcherHint('.toBeNotifications') +
+          '\n\n' +
+          `Expected notifications to be:\n` +
+          `  ${this.utils.printExpected(expectedMarble)}\n` +
+          `But got:\n` +
+          `  ${this.utils.printReceived(actualMarble)}` +
+          (diffString ? `\n\nDifference:\n\n${diffString}` : '')
+        );
+      };
 
     return {
       pass,
@@ -52,27 +53,26 @@ export const internalMatchers: MatchersObject = {
     const actualMarbleArray = Marblizer.marblizeSubscriptions(actual);
     const expectedMarbleArray = Marblizer.marblizeSubscriptions(expected);
     const pass = subscriptionsPass(actualMarbleArray, expectedMarbleArray);
-    const message = pass ? () =>
-      this.utils.matcherHint('.not.toHaveSubscriptions') +
-      '\n\n' +
-      `Expected observable to not have the following subscription points:\n` +
-      `  ${this.utils.printExpected(expectedMarbleArray)}\n` +
-      `But got:\n` +
-      `  ${this.utils.printReceived(actualMarbleArray)}` : () => {
-      const diffString = this.utils.diff(expectedMarbleArray, actualMarbleArray, {
-        expand: true,
-      });
-
-      return (
-        this.utils.matcherHint('.toHaveSubscriptions') +
+    const message = pass ?
+      () => this.utils.matcherHint('.not.toHaveSubscriptions') +
         '\n\n' +
-        `Expected observable to have the following subscription points:\n` +
+        `Expected observable to not have the following subscription points:\n` +
         `  ${this.utils.printExpected(expectedMarbleArray)}\n` +
         `But got:\n` +
-        `  ${this.utils.printReceived(actualMarbleArray)}` +
-        (diffString ? `\n\nDifference:\n\n${diffString}` : '')
-      );
-    };
+        `  ${this.utils.printReceived(actualMarbleArray)}` :
+      () => {
+        const diffString = this.utils.diff(expectedMarbleArray, actualMarbleArray, {
+          expand: true
+        });
+
+        return this.utils.matcherHint('.toHaveSubscriptions') +
+          '\n\n' +
+          `Expected observable to have the following subscription points:\n` +
+          `  ${this.utils.printExpected(expectedMarbleArray)}\n` +
+          `But got:\n` +
+          `  ${this.utils.printReceived(actualMarbleArray)}` +
+          (diffString ? `\n\nDifference:\n\n${diffString}` : '');
+      };
 
     return {
       pass,
@@ -86,16 +86,16 @@ export const internalMatchers: MatchersObject = {
     if (actual && actual.length > 0)
       marbles = Marblizer.marblizeSubscriptions(actual);
 
-    const message = pass ? () =>
-      this.utils.matcherHint('.not.toHaveNoSubscriptions') +
-      '\n\n' +
-      `Expected observable to have at least one subscription point, but got nothing` +
-      this.utils.printReceived('') : () =>
-      this.utils.matcherHint('.toHaveNoSubscriptions') +
-      '\n\n' +
-      `Expected observable to have no subscription points\n` +
-      `But got:\n` +
-      `  ${this.utils.printReceived(marbles)}\n\n`;
+    const message = pass ?
+      () => this.utils.matcherHint('.not.toHaveNoSubscriptions') +
+        '\n\n' +
+        `Expected observable to have at least one subscription point, but got nothing` +
+        this.utils.printReceived('') :
+      () => this.utils.matcherHint('.toHaveNoSubscriptions') +
+        '\n\n' +
+        `Expected observable to have no subscription points\n` +
+        `But got:\n` +
+        `  ${this.utils.printReceived(marbles)}\n\n`;
 
     return {
       pass,
@@ -116,12 +116,9 @@ function canMarblize(...messages: TestMessages[]): boolean {
 }
 
 function isMessagesMarblizable(messages: TestMessages): boolean {
-  return messages.every(
-    ({ notification }) =>
-      notification.kind === 'C' ||
-        (notification.kind === 'E' && notification.error === 'error') ||
-        (notification.kind === 'N' && isCharacter(notification.value))
-  );
+  return messages.every(({ notification }) => notification.kind === 'C' ||
+    notification.kind === 'E' && notification.error === 'error' ||
+    notification.kind === 'N' && isCharacter(notification.value));
 }
 
 function isCharacter(value: any): boolean {
