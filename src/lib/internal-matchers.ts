@@ -1,6 +1,6 @@
 import { SubscriptionLog, TestMessages } from './types';
-import { Marblizer } from './marblizer';
 import { ExpectationResult, MatchersObject } from '@vitest/expect';
+import { canMarblize, marblize, marblizeSubscriptions } from './marblizer';
 
 interface InternalMatchers<R = unknown> {
   toBeNotifications: (messages: TestMessages) => R;
@@ -17,8 +17,8 @@ export const internalMatchers: MatchersObject = {
     let message = '';
 
     if (canMarblize(actual, expected)) {
-      actualMarble = Marblizer.marblize(actual);
-      expectedMarble = Marblizer.marblize(expected);
+      actualMarble = marblize(actual);
+      expectedMarble = marblize(expected);
     }
 
     const pass = this.equals(actualMarble, expectedMarble);
@@ -43,8 +43,8 @@ export const internalMatchers: MatchersObject = {
     };
   },
   toBeSubscriptions(actual: SubscriptionLog[], expected: SubscriptionLog[]): ExpectationResult {
-    const actualMarbleArray = Marblizer.marblizeSubscriptions(actual);
-    const expectedMarbleArray = Marblizer.marblizeSubscriptions(expected);
+    const actualMarbleArray = marblizeSubscriptions(actual);
+    const expectedMarbleArray = marblizeSubscriptions(expected);
     const pass = subscriptionsPass(actualMarbleArray, expectedMarbleArray);
     let message = '';
 
@@ -76,7 +76,7 @@ export const internalMatchers: MatchersObject = {
       '\n\n' +
       `Expected observable to have no subscription points\n` +
       `But got:\n` +
-      `  ${this.utils.printReceived(Marblizer.marblizeSubscriptions(actual))}\n\n`;
+      `  ${this.utils.printReceived(marblizeSubscriptions(actual))}\n\n`;
 
     return {
       pass,
@@ -90,20 +90,6 @@ expect.extend(internalMatchers);
 declare module 'vitest' {
   interface Matchers<T = any> extends InternalMatchers<T> {
   }
-}
-
-function canMarblize(...messages: TestMessages[]): boolean {
-  return messages.every(isMessagesMarblizable);
-}
-
-function isMessagesMarblizable(messages: TestMessages): boolean {
-  return messages.every(({ notification }) => notification.kind === 'C' ||
-    notification.kind === 'E' && notification.error === 'error' ||
-    notification.kind === 'N' && isCharacter(notification.value));
-}
-
-function isCharacter(value: any): boolean {
-  return typeof value === 'string' && value.length === 1;
 }
 
 function subscriptionsPass(actualMarbleArray: string[], expectedMarbleArray: string[]): boolean {

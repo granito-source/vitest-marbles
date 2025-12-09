@@ -5,65 +5,77 @@ import { NotificationKindChars, ValueLiteral } from './notification-kind';
 
 const frameStep = 10;
 
-export class Marblizer {
-  public static marblize(messages: TestMessages): string {
-    const emissions = Marblizer.getNotificationEvents(messages);
-    let marbles = '';
+export function canMarblize(...messages: TestMessages[]): boolean {
+  return messages.every(isMessagesMarblizable);
+}
 
-    for (let i = 0, prevEndFrame = 0; i < emissions.length; prevEndFrame = emissions[i].end, i++)
-      marbles = `${marbles}${
-        MarblesGlossary.TimeFrame.repeat(emissions[i].start - prevEndFrame) + emissions[i].marbles
-      }`;
+export function marblize(messages: TestMessages): string {
+  const emissions = getNotificationEvents(messages);
+  let marbles = '';
 
-    return marbles;
-  }
+  for (let i = 0, prevEndFrame = 0; i < emissions.length; prevEndFrame = emissions[i].end, i++)
+    marbles = `${marbles}${
+      MarblesGlossary.TimeFrame.repeat(emissions[i].start - prevEndFrame) + emissions[i].marbles
+    }`;
 
-  public static marblizeSubscriptions(logs: SubscriptionLog[]): string[] {
-    return logs.map(log =>
-      this.marblizeLogEntry(log.subscribedFrame / frameStep, MarblesGlossary.Subscription) +
-        this.marblizeLogEntry((log.unsubscribedFrame - log.subscribedFrame) / frameStep - 1,
-          MarblesGlossary.Unsubscription)
-    );
-  }
+  return marbles;
+}
 
-  private static marblizeLogEntry(logPoint: number, symbol: string): string {
-    return logPoint !== Infinity ? MarblesGlossary.TimeFrame.repeat(logPoint) + symbol : '';
-  }
+export function marblizeSubscriptions(logs: SubscriptionLog[]): string[] {
+  return logs.map(log =>
+    marblizeLogEntry(log.subscribedFrame / frameStep, MarblesGlossary.Subscription) +
+      marblizeLogEntry((log.unsubscribedFrame - log.subscribedFrame) / frameStep - 1,
+        MarblesGlossary.Unsubscription)
+  );
+}
 
-  private static getNotificationEvents(messages: TestMessages): NotificationEvent[] {
-    const framesToEmissions = messages.reduce<{ [frame: number]: NotificationEvent }>((result, message) => {
-      if (!result[message.frame])
-        result[message.frame] = new NotificationEvent(message.frame / frameStep);
+function isMessagesMarblizable(messages: TestMessages): boolean {
+  return messages.every(({ notification }) => notification.kind === 'C' ||
+    notification.kind === 'E' && notification.error === 'error' ||
+    notification.kind === 'N' && isCharacter(notification.value));
+}
 
-      const event = result[message.frame];
+function isCharacter(value: any): boolean {
+  return typeof value === 'string' && value.length === 1;
+}
 
-      event.marbles += Marblizer.extractMarble(message);
+function marblizeLogEntry(logPoint: number, symbol: string): string {
+  return logPoint !== Infinity ? MarblesGlossary.TimeFrame.repeat(logPoint) + symbol : '';
+}
 
-      return result;
-    }, {});
+function getNotificationEvents(messages: TestMessages): NotificationEvent[] {
+  const framesToEmissions = messages.reduce<{ [frame: number]: NotificationEvent }>((result, message) => {
+    if (!result[message.frame])
+      result[message.frame] = new NotificationEvent(message.frame / frameStep);
 
-    const events = Object
-      .keys(framesToEmissions)
-      .map(frame => framesToEmissions[Number(frame)]);
+    const event = result[message.frame];
 
-    Marblizer.encloseGroupEvents(events);
+    event.marbles += extractMarble(message);
 
-    return events;
-  }
+    return result;
+  }, {});
 
-  private static extractMarble(message: TestMessages[0]): MarblesGlossary | {} {
-    let marble = NotificationKindChars[message.notification.kind];
+  const events = Object
+    .keys(framesToEmissions)
+    .map(frame => framesToEmissions[Number(frame)]);
 
-    if (marble === ValueLiteral)
-      marble = (message.notification as any).value;
+  encloseGroupEvents(events);
 
-    return marble;
-  }
+  return events;
+}
 
-  private static encloseGroupEvents(events: NotificationEvent[]): void {
-    events.forEach(event => {
-      if (event.marbles.length > 1)
-        event.marbles = `${MarblesGlossary.GroupStart}${event.marbles}${MarblesGlossary.GroupEnd}`;
-    });
-  }
+function extractMarble(message: TestMessages[0]): MarblesGlossary | {} {
+  let marble = NotificationKindChars[message.notification.kind];
+
+  if (marble === ValueLiteral)
+    marble = (message.notification as any).value;
+
+  return marble;
+}
+
+function encloseGroupEvents(events: NotificationEvent[]): void {
+  events.forEach(event => {
+    if (event.marbles.length > 1)
+      event.marbles = `${MarblesGlossary.GroupStart}${event.marbles}${MarblesGlossary.GroupEnd}`;
+  });
 }
