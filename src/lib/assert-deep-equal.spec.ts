@@ -62,12 +62,12 @@ describe('assertDeepEqual()', () => {
 
   it('throws error when actual messages but expected is empty', () => {
     expect(() => assertDeepEqual(messages, [])).toThrowError(expect.toSatisfy(e =>
-      /Expected notifications to be:.*"".*But got:.*"--b--e".*Difference:/s.test(e.message)));
+      /Expected notifications to be:.*Array \[].*But got:.*"value": "b".*"value": "e".*Difference:/s.test(e.message)));
   });
 
   it('throws error when actual empty but expected messages', () => {
     expect(() => assertDeepEqual([], messages)).toThrowError(expect.toSatisfy(e =>
-      /Expected notifications to be:.*"--b--e".*But got:.*"".*Difference:/s.test(e.message)));
+      /Expected notifications to be:.*"value": "b".*"value": "e".*But got:.*Array \[].*Difference:/s.test(e.message)));
   });
 
   it('throws error when actual and expected messages are different', () => {
@@ -77,42 +77,18 @@ describe('assertDeepEqual()', () => {
     ];
 
     expect(() => assertDeepEqual(actual, messages)).toThrowError(expect.toSatisfy(e =>
-      /Expected notifications to be:.*"--b--e".*But got:.*"--b--e\|".*Difference:/s.test(e.message)));
+      /Expected notifications to be:.*But got:.*"kind": "C".*Difference:/s.test(e.message)));
   });
 
-  it('throws error when different character value', () => {
+  it('throws error when actual and expected values are different', () => {
     const actual: TestMessages = [
-      { frame: 20, notification: { kind: 'N', value: 'a' } }
-    ];
-    const expected: TestMessages = [
-      { frame: 20, notification: { kind: 'N', value: 'b' } }
-    ];
-
-    expect(() => assertDeepEqual(actual, expected)).toThrowError(expect.toSatisfy(e =>
-      /Expected notifications to be:.*"--b".*But got:.*"--a".*Difference/s.test(e.message)));
-  });
-
-  it('throws error when actual has different non-character value', () => {
-    const actual: TestMessages = [
-      { frame: 20, notification: { kind: 'N', value: 42 } }
-    ];
-    const expected: TestMessages = [
-      { frame: 20, notification: { kind: 'N', value: 'a' } }
-    ];
-
-    expect(() => assertDeepEqual(actual, expected)).toThrowError(expect.toSatisfy(e =>
-      /Expected notifications to be:.*Array \[.*"value": "a".*But got:.*Array \[.*"value": 42.*Difference/s.test(e.message)));
-  });
-
-  it('throws error when expected has different non-character value', () => {
-    const actual: TestMessages = [
-      { frame: 20, notification: { kind: 'N', value: 'a' } }
+      { frame: 20, notification: { kind: 'N', value: 43 } }
     ];
     const expected: TestMessages = [
       { frame: 20, notification: { kind: 'N', value: 42 } }
     ];
 
     expect(() => assertDeepEqual(actual, expected)).toThrowError(expect.toSatisfy(e =>
-      /Expected notifications to be:.*Array \[.*"value": 42.*But got:.*Array \[.*"value": "a".*Difference/s.test(e.message)));
+      /Expected notifications to be:.*Array \[.*"value": 42.*But got:.*Array \[.*"value": 43.*Difference/s.test(e.message)));
   });
 });

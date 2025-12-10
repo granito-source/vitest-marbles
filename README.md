@@ -12,7 +12,7 @@ clean way.
 # Features
 
 * Typescript;
-* marblized error messages.
+* easy to read error messages for subscriptions.
 
 # Prerequisites
 
@@ -23,7 +23,8 @@ clean way.
 
 # Not supported
 
-* time progression syntax.
+* time progression syntax;
+* `.not` syntax.
 
 # Usage
 

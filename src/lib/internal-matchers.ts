@@ -1,6 +1,6 @@
 import { SubscriptionLog, TestMessages } from './types';
 import { ExpectationResult, MatchersObject } from '@vitest/expect';
-import { tryMarblizing, marblize } from './marblizer';
+import { marblize } from './marblizer';
 
 interface InternalMatchers<R = unknown> {
   toBeNotifications: (messages: TestMessages) => R;
@@ -11,13 +11,7 @@ interface InternalMatchers<R = unknown> {
 }
 
 export const internalMatchers: MatchersObject = {
-  toBeNotifications(actualMessages: TestMessages, expectedMessages: TestMessages): ExpectationResult {
-    let actual = tryMarblizing(actualMessages);
-    const expected = typeof actual === 'string' ? tryMarblizing(expectedMessages) : expectedMessages;
-
-    if (typeof expected !== 'string')
-      actual = actualMessages;
-
+  toBeNotifications(actual: TestMessages, expected: TestMessages): ExpectationResult {
     let message = '';
 
     const pass = this.equals(actual, expected);
