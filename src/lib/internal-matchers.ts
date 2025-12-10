@@ -1,6 +1,6 @@
 import { SubscriptionLog, TestMessages } from './types';
 import { ExpectationResult, MatchersObject } from '@vitest/expect';
-import { canMarblize, marblize, marblizeSubscriptions } from './marblizer';
+import { tryMarblizing, marblize } from './marblizer';
 
 interface InternalMatchers<R = unknown> {
   toBeNotifications: (messages: TestMessages) => R;
@@ -11,30 +11,27 @@ interface InternalMatchers<R = unknown> {
 }
 
 export const internalMatchers: MatchersObject = {
-  toBeNotifications(actual: TestMessages, expected: TestMessages): ExpectationResult {
-    let actualMarble: string | TestMessages = actual;
-    let expectedMarble: string | TestMessages = expected;
+  toBeNotifications(actualMessages: TestMessages, expectedMessages: TestMessages): ExpectationResult {
+    let actual = tryMarblizing(actualMessages);
+    const expected = typeof actual === 'string' ? tryMarblizing(expectedMessages) : expectedMessages;
+
+    if (typeof expected !== 'string')
+      actual = actualMessages;
+
     let message = '';
 
-    if (canMarblize(actual, expected)) {
-      actualMarble = marblize(actual);
-      expectedMarble = marblize(expected);
-    }
-
-    const pass = this.equals(actualMarble, expectedMarble);
+    const pass = this.equals(actual, expected);
 
     if (!pass) {
-        const difference = this.utils.diff(expectedMarble, actualMarble, {
-          expand: true,
-        });
+        const diff = this.utils.diff(expected, actual, { expand: true });
 
         message = this.utils.matcherHint('.toBeNotifications') +
           '\n\n' +
           `Expected notifications to be:\n` +
-          `  ${this.utils.printExpected(expectedMarble)}\n` +
+          `  ${this.utils.printExpected(expected)}\n` +
           `But got:\n` +
-          `  ${this.utils.printReceived(actualMarble)}` +
-          `\n\nDifference:\n\n${difference}`;
+          `  ${this.utils.printReceived(actual)}` +
+          `\n\nDifference:\n\n${diff}`;
     }
 
     return {
@@ -42,24 +39,22 @@ export const internalMatchers: MatchersObject = {
       message: () => message
     };
   },
-  toBeSubscriptions(actual: SubscriptionLog[], expected: SubscriptionLog[]): ExpectationResult {
-    const actualMarbleArray = marblizeSubscriptions(actual);
-    const expectedMarbleArray = marblizeSubscriptions(expected);
-    const pass = subscriptionsPass(actualMarbleArray, expectedMarbleArray);
+  toBeSubscriptions(actualSubs: SubscriptionLog[], expectedSubs: SubscriptionLog[]): ExpectationResult {
+    const actual = marblize(actualSubs);
+    const expected = marblize(expectedSubs);
+    const pass = subscriptionsPass(actual, expected);
     let message = '';
 
     if (!pass) {
-      const difference = this.utils.diff(expectedMarbleArray, actualMarbleArray, {
-        expand: true
-      });
+      const diff = this.utils.diff(expected, actual, { expand: true });
 
       message = this.utils.matcherHint('.toHaveSubscriptions') +
         '\n\n' +
         `Expected observable to have the following subscription points:\n` +
-        `  ${this.utils.printExpected(expectedMarbleArray)}\n` +
+        `  ${this.utils.printExpected(expected)}\n` +
         `But got:\n` +
-        `  ${this.utils.printReceived(actualMarbleArray)}` +
-        `\n\nDifference:\n\n${difference}`;
+        `  ${this.utils.printReceived(actual)}` +
+        `\n\nDifference:\n\n${diff}`;
     }
 
     return {
@@ -76,7 +71,7 @@ export const internalMatchers: MatchersObject = {
       '\n\n' +
       `Expected observable to have no subscription points\n` +
       `But got:\n` +
-      `  ${this.utils.printReceived(marblizeSubscriptions(actual))}\n\n`;
+      `  ${this.utils.printReceived(marblize(actual))}\n\n`;
 
     return {
       pass,

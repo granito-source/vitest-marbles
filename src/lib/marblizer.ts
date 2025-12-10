@@ -5,11 +5,10 @@ import { NotificationKindChars, ValueLiteral } from './notification-kind';
 
 const frameStep = 10;
 
-export function canMarblize(...messages: TestMessages[]): boolean {
-  return messages.every(isMessagesMarblizable);
-}
+export function tryMarblizing(messages: TestMessages): string | TestMessages {
+  if (!isMessagesMarblizable(messages))
+    return messages;
 
-export function marblize(messages: TestMessages): string {
   const emissions = getNotificationEvents(messages);
   let marbles = '';
 
@@ -21,7 +20,7 @@ export function marblize(messages: TestMessages): string {
   return marbles;
 }
 
-export function marblizeSubscriptions(logs: SubscriptionLog[]): string[] {
+export function marblize(logs: SubscriptionLog[]): string[] {
   return logs.map(log =>
     marblizeLogEntry(log.subscribedFrame / frameStep, MarblesGlossary.Subscription) +
       marblizeLogEntry((log.unsubscribedFrame - log.subscribedFrame) / frameStep - 1,
