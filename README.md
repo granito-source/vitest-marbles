@@ -4,7 +4,7 @@
 # Vitest Marbles
 
 A set of helper functions and [Vitest](http://vitest.dev/) matchers for
-[RxJs](https://rxjs.dev/)
+[RxJS](https://rxjs.dev/)
 [marble testing](https://rxjs.dev/guide/testing/marble-testing).
 This library will help you to test your reactive code in easy and
 clean way.
@@ -12,7 +12,7 @@ clean way.
 # Features
 
 * Typescript;
-* easy to read error messages for subscriptions.
+* easy to read error messages for subscription expectations.
 
 # Prerequisites
 

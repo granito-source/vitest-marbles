@@ -36,7 +36,7 @@ export const internalMatchers: MatchersObject = {
   toBeSubscriptions(actualSubs: SubscriptionLog[], expectedSubs: SubscriptionLog[]): ExpectationResult {
     const actual = marblize(actualSubs);
     const expected = marblize(expectedSubs);
-    const pass = subscriptionsPass(actual, expected);
+    const pass = sameSubscriptions(actual, expected);
     let message = '';
 
     if (!pass) {
@@ -56,19 +56,17 @@ export const internalMatchers: MatchersObject = {
       message: () => message
     };
   },
-  toHaveEmptySubscriptions(actual: SubscriptionLog[] | undefined): ExpectationResult {
-    const pass = !(actual && actual.length > 0);
-    let message = '';
-
-    if (!pass)
-      message = this.utils.matcherHint('.toHaveNoSubscriptions') +
+  toHaveEmptySubscriptions(actual: SubscriptionLog[]): ExpectationResult {
+    const message = this.utils.matcherHint('.toHaveNoSubscriptions') +
       '\n\n' +
       `Expected observable to have no subscription points\n` +
       `But got:\n` +
       `  ${this.utils.printReceived(marblize(actual))}\n\n`;
 
+    // this is a special case that always fails, see how it is used in
+    // assertDeepEqual() function
     return {
-      pass,
+      pass: false,
       message: () => message
     };
   }
@@ -81,7 +79,7 @@ declare module 'vitest' {
   }
 }
 
-function subscriptionsPass(actualMarbleArray: string[], expectedMarbleArray: string[]): boolean {
+function sameSubscriptions(actualMarbleArray: string[], expectedMarbleArray: string[]): boolean {
   if (actualMarbleArray.length !== expectedMarbleArray.length)
     return false;
 

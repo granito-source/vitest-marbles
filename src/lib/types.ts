@@ -15,3 +15,5 @@ export type TestMessages = ReturnType<typeof TestScheduler.parseMarbles>;
  * Exported return type of SubscriptionLog to avoid importing internal APIs.
  */
 export type SubscriptionLog = ReturnType<typeof TestScheduler.parseMarblesAsSubscriptions>;
+
+export type MessagesOrSubscriptions = TestMessages | SubscriptionLog[];
