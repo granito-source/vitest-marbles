@@ -30,7 +30,8 @@ const success: ExpectationResult = {
 expect.extend({
     toHaveSubscriptions<T>(actual: TestObservable<T>,
         marbles: string | string[]): ExpectationResult {
-        const sanitizedMarbles = Array.isArray(marbles) ? marbles.map(m => m.trim()) : marbles.trim();
+        const sanitizedMarbles = Array.isArray(marbles) ?
+            marbles.map(m => m.trim()) : marbles.trim();
 
         Scheduler.get()
             .expectSubscriptions(actual.subscriptions).toBe(sanitizedMarbles);
