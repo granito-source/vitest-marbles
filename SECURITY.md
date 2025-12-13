@@ -8,14 +8,8 @@ to disclose it responsibly.
 
 ## Supported Versions
 
-_Vitest Marbles_ has not been released yet. We publish developer previews,
-which allow us to refine the API of the library in real-world projects.
-As such, only the latest published developer preview should be considered when
-reporting security issues.
-
-Going forward, after the first release is published, the latest two major releases
-will be supported for security updates as well as the upcoming major release
-(code in _main_ branch).
+The latest two major releases will be supported for security updates as
+well as the upcoming major release (code in _main_ branch).
 
 ## Reporting a Vulnerability
 
