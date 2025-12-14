@@ -1,6 +1,6 @@
 import { defineConfig } from 'vitest/config';
 
-export default defineConfig(() => ({
+export default defineConfig({
     test: {
         watch: false,
         globals: true,
@@ -10,4 +10,4 @@ export default defineConfig(() => ({
             reportsDirectory: './dist/coverage',
         },
     },
-}));
+});

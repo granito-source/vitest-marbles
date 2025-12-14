@@ -1,5 +1,6 @@
 [![Build](https://github.com/granito-source/vitest-marbles/actions/workflows/build.yaml/badge.svg)](https://github.com/granito-source/vitest-marbles/actions/workflows/build.yaml)
 [![Latest Version](https://img.shields.io/npm/v/%40granito%2Fvitest-marbles.svg)](https://npm.im/@granito/vitest-marbles)
+[![License](https://img.shields.io/github/license/granito-source/vitest-marbles?color=blue)](https://github.com/granito-source/vitest-marbles/blob/main/LICENSE)
 
 # Vitest Marbles
 
