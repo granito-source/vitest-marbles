@@ -1,5 +1,7 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",
+    "rootDir": "src",
     "composite": true,
     "emitDeclarationOnly": true,
     "importHelpers": true,
@@ -14,6 +16,9 @@
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
     "noEmitOnError": true,
-    "noUnusedLocals": true
+    "noUnusedLocals": true,
+    "types": [
+      "vitest/globals"
+    ]
   }
 }

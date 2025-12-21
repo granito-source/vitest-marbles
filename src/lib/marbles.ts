@@ -11,7 +11,7 @@ export function cold<T = string>(marbles: string,
 export function hot<T = string>(marbles: string,
     values?: Record<string, T>, error?: any): HotObservable<T> {
     return Scheduler.get()
-        .createHotObservable(marbles.trim(), values, error) as HotObservable<T>;
+        .createHotObservable(marbles.trim(), values, error);
 }
 
 export function time(marbles: string): number {
