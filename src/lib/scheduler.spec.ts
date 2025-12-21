@@ -1,6 +1,6 @@
 import { Scheduler } from './scheduler';
 import { TestScheduler } from 'rxjs/testing';
-import { SubscriptionLog, TestMessages } from './types';
+import { SubscriptionLog, TestMessage } from './types';
 
 describe('Scheduler', () => {
     beforeEach(() => Scheduler.init());
@@ -23,7 +23,7 @@ describe('Scheduler', () => {
             { subscribedFrame: 10, unsubscribedFrame: 30 },
             { subscribedFrame: 50, unsubscribedFrame: Infinity }
         ];
-        const messages: TestMessages = [
+        const messages: TestMessage[] = [
             { frame: 20, notification: { kind: 'N', value: 'b' } },
             { frame: 50, notification: { kind: 'N', value: 'e' } }
         ];
@@ -117,7 +117,7 @@ describe('Scheduler', () => {
         });
 
         it('throws error when actual and expected messages are different', () => {
-            const actual: TestMessages = [
+            const actual: TestMessage[] = [
                 ...messages,
                 { frame: 60, notification: { kind: 'C' } }
             ];
@@ -129,10 +129,10 @@ describe('Scheduler', () => {
         });
 
         it('throws error when actual and expected values are different', () => {
-            const actual: TestMessages = [
+            const actual: TestMessage[] = [
                 { frame: 20, notification: { kind: 'N', value: 43 } }
             ];
-            const expected: TestMessages = [
+            const expected: TestMessage[] = [
                 { frame: 20, notification: { kind: 'N', value: 42 } }
             ];
             const msg = new RegExp('Expected notifications to be:' +
