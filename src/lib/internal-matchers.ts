@@ -1,9 +1,9 @@
-import { SubscriptionLog, TestMessages } from './types';
+import { SubscriptionLog, TestMessage } from './types';
 import { ExpectationResult, MatchersObject } from '@vitest/expect';
 import { marblize } from './marblizer';
 
 interface InternalMatchers<R = unknown> {
-    toBeNotifications: (messages: TestMessages) => R;
+    toBeNotifications: (messages: TestMessage[]) => R;
 
     toBeSubscriptions: (subscriptions: SubscriptionLog[]) => R;
 
@@ -11,8 +11,8 @@ interface InternalMatchers<R = unknown> {
 }
 
 export const internalMatchers: MatchersObject = {
-    toBeNotifications(actual: TestMessages,
-        expected: TestMessages): ExpectationResult {
+    toBeNotifications(actual: TestMessage[],
+        expected: TestMessage[]): ExpectationResult {
         let message = '';
 
         const pass = this.equals(actual, expected);
