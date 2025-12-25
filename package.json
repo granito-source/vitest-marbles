@@ -40,12 +40,12 @@
     "tag": "latest"
   },
   "devDependencies": {
-    "@nx/esbuild": "22.3.3",
-    "@nx/vitest": "22.3.3",
+    "@nx/esbuild": "22.2.3",
+    "@nx/vitest": "22.2.3",
     "@vitest/coverage-v8": "^4.0.16",
     "esbuild": "^0.27.2",
     "jsdom": "^27.3.0",
-    "nx": "22.3.3",
+    "nx": "22.2.3",
     "rxjs": "^7.8.2",
     "tslib": "^2.8.1",
     "typescript": "~5.9.3",
@@ -67,9 +67,6 @@
           "outputPath": "dist/vitest-marbles",
           "main": "src/index.ts",
           "tsConfig": "tsconfig.lib.json",
-          "format": [
-            "esm"
-          ],
           "declarationRootDir": "src",
           "assets": [
             "LICENSE",

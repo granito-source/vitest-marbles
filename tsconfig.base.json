@@ -3,11 +3,10 @@
     "baseUrl": ".",
     "rootDir": "src",
     "composite": true,
-    "emitDeclarationOnly": true,
+    "target": "ES2022",
+    "module": "preserve",
     "importHelpers": true,
     "isolatedModules": true,
-    "module": "preserve",
-    "target": "ES2022",
     "strict": true,
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
@@ -15,8 +14,10 @@
     "noFallthroughCasesInSwitch": true,
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
-    "noEmitOnError": true,
     "noUnusedLocals": true,
+    "emitDeclarationOnly": true,
+    "noEmitOnError": true,
+    "skipLibCheck": true,
     "types": [
       "vitest/globals"
     ]
