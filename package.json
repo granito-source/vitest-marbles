@@ -1,6 +1,6 @@
 {
   "name": "@granito/vitest-marbles",
-  "version": "1.0.2",
+  "version": "1.0.3-dev.0",
   "description": "Marble testing helpers library for RxJs and Vitest",
   "repository": {
     "type": "git",
