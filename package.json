@@ -39,22 +39,22 @@
     "access": "public",
     "tag": "latest"
   },
+  "peerDependencies": {
+    "rxjs": "^7.0.0",
+    "vitest": "^4.0.0"
+  },
   "devDependencies": {
     "@nx/esbuild": "22.2.3",
     "@nx/vitest": "22.2.3",
     "@vitest/coverage-v8": "^4.0.16",
     "esbuild": "^0.27.2",
-    "jsdom": "^27.3.0",
+    "jsdom": "^27.4.0",
     "nx": "22.2.3",
     "rxjs": "^7.8.2",
     "tslib": "^2.8.1",
     "typescript": "~5.9.3",
     "vite": "^7.3.0",
     "vitest": "^4.0.16"
-  },
-  "peerDependencies": {
-    "rxjs": "^7.0.0",
-    "vitest": "^4.0.0"
   },
   "nx": {
     "targets": {
