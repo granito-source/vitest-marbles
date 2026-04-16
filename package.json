@@ -1,6 +1,6 @@
 {
   "name": "@granito/vitest-marbles",
-  "version": "1.1.2-dev.0",
+  "version": "1.1.2",
   "description": "Marble testing helpers library for RxJs and Vitest",
   "repository": {
     "type": "git",
@@ -64,7 +64,9 @@
           "{options.outputPath}"
         ],
         "options": {
-          "external": ["rxjs"],
+          "external": [
+            "rxjs"
+          ],
           "outputPath": "dist/vitest-marbles",
           "main": "src/index.ts",
           "tsConfig": "tsconfig.lib.json",
