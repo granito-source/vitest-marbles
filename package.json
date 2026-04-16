@@ -44,17 +44,17 @@
     "vitest": "^4.0.0"
   },
   "devDependencies": {
-    "@nx/esbuild": "22.2.3",
-    "@nx/vitest": "22.2.3",
-    "@vitest/coverage-v8": "^4.0.17",
-    "esbuild": "^0.27.2",
-    "jsdom": "^27.4.0",
-    "nx": "22.2.3",
+    "@nx/esbuild": "22.6.5",
+    "@nx/vitest": "22.6.5",
+    "@vitest/coverage-v8": "^4.1.4",
+    "esbuild": "^0.28.0",
+    "jsdom": "^29.0.2",
+    "nx": "22.6.5",
     "rxjs": "^7.8.2",
     "tslib": "^2.8.1",
     "typescript": "~5.9.3",
-    "vite": "^7.3.1",
-    "vitest": "^4.0.17"
+    "vite": "^8.0.8",
+    "vitest": "^4.1.4"
   },
   "nx": {
     "targets": {
@@ -64,6 +64,9 @@
           "{options.outputPath}"
         ],
         "options": {
+          "external": [
+            "rxjs"
+          ],
           "outputPath": "dist/vitest-marbles",
           "main": "src/index.ts",
           "tsConfig": "tsconfig.lib.json",
