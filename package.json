@@ -69,9 +69,6 @@
           "{options.outputPath}"
         ],
         "options": {
-          "external": [
-            "rxjs"
-          ],
           "outputPath": "dist/vitest-marbles",
           "main": "src/index.ts",
           "tsConfig": "tsconfig.lib.json",
