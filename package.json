@@ -39,6 +39,11 @@
     "access": "public",
     "tag": "latest"
   },
+  "allowScripts": {
+    "esbuild": false,
+    "fsevents": false,
+    "nx": false
+  },
   "peerDependencies": {
     "rxjs": "^7.0.0",
     "vitest": "^4.0.0"
