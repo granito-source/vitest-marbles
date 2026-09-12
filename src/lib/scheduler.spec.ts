@@ -32,20 +32,20 @@ describe('Scheduler', () => {
         beforeEach(() => assertDeepEqual = Scheduler.get().assertDeepEqual);
 
         it('returns normally when expected is undefined', () => {
-            expect(() => assertDeepEqual([], undefined)).not.toThrowError();
+            expect(() => assertDeepEqual([], undefined)).not.toThrow();
             expect(() => assertDeepEqual(messages, undefined))
-                .not.toThrowError();
+                .not.toThrow();
             expect(() => assertDeepEqual(subscriptions, undefined))
-                .not.toThrowError();
+                .not.toThrow();
         });
 
         it('returns normally when expected and actual are empty', () => {
-            expect(() => assertDeepEqual([], [])).not.toThrowError();
+            expect(() => assertDeepEqual([], [])).not.toThrow();
         });
 
         it('returns normally when the same subscriptions', () => {
             expect(() => assertDeepEqual(subscriptions, subscriptions))
-                .not.toThrowError();
+                .not.toThrow();
         });
 
         it('throws error when actual subscriptions but expected is empty', () => {
@@ -53,7 +53,7 @@ describe('Scheduler', () => {
                 'subscription points.*But got:.*"-\\^-!".*"-----\\^"', 's');
 
             expect(() => assertDeepEqual(subscriptions, []))
-                .toThrowError(expect.toSatisfy(e => msg.test(e.message)));
+                .toThrow(expect.toSatisfy(e => msg.test(e.message)));
         });
 
         it('throws error when actual is empty but expected subscriptions', () => {
@@ -62,7 +62,7 @@ describe('Scheduler', () => {
                 '.*"-\\^-!".*"-----\\^".*But got:.*\\[]', 's');
 
             expect(() => assertDeepEqual([], subscriptions))
-                .toThrowError(expect.toSatisfy(e => msg.test(e.message)));
+                .toThrow(expect.toSatisfy(e => msg.test(e.message)));
         });
 
         it('throws error when actual and expected subscriptions have different length', () => {
@@ -76,7 +76,7 @@ describe('Scheduler', () => {
                 '.*"\\^-!".*"-\\^-!".*"-----\\^".*Difference:', 's');
 
             expect(() => assertDeepEqual(actual, subscriptions))
-                .toThrowError(expect.toSatisfy(e => msg.test(e.message)));
+                .toThrow(expect.toSatisfy(e => msg.test(e.message)));
         });
 
         it('throws error when actual and expected subscriptions do not match', () => {
@@ -90,12 +90,12 @@ describe('Scheduler', () => {
                 '.*"\\^-!".*"-----\\^".*Difference:', 's');
 
             expect(() => assertDeepEqual(actual, subscriptions))
-                .toThrowError(expect.toSatisfy(e => msg.test(e.message)));
+                .toThrow(expect.toSatisfy(e => msg.test(e.message)));
         });
 
         it('returns normally when the same messages', () => {
             expect(() => assertDeepEqual(messages, messages))
-                .not.toThrowError();
+                .not.toThrow();
         });
 
         it('throws error when actual messages but expected is empty', () => {
@@ -104,7 +104,7 @@ describe('Scheduler', () => {
                 '.*"value": "b".*"value": "e".*Difference:', 's');
 
             expect(() => assertDeepEqual(messages, []))
-                .toThrowError(expect.toSatisfy(e => msg.test(e.message)));
+                .toThrow(expect.toSatisfy(e => msg.test(e.message)));
         });
 
         it('throws error when actual empty but expected messages', () => {
@@ -113,7 +113,7 @@ describe('Scheduler', () => {
                 '.*Array \\[].*Difference:', 's');
 
             expect(() => assertDeepEqual([], messages))
-                .toThrowError(expect.toSatisfy(e => msg.test(e.message)));
+                .toThrow(expect.toSatisfy(e => msg.test(e.message)));
         });
 
         it('throws error when actual and expected messages are different', () => {
@@ -125,7 +125,7 @@ describe('Scheduler', () => {
                 '.*But got:.*"kind": "C".*Difference:', 's');
 
             expect(() => assertDeepEqual(actual, messages))
-                .toThrowError(expect.toSatisfy(e => msg.test(e.message)));
+                .toThrow(expect.toSatisfy(e => msg.test(e.message)));
         });
 
         it('throws error when actual and expected values are different', () => {
@@ -140,7 +140,7 @@ describe('Scheduler', () => {
                 '.*Array \\[.*"value": 43.*Difference', 's');
 
             expect(() => assertDeepEqual(actual, expected))
-                .toThrowError(expect.toSatisfy(e => msg.test(e.message)));
+                .toThrow(expect.toSatisfy(e => msg.test(e.message)));
         });
     });
 });

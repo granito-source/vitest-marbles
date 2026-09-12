@@ -7,7 +7,7 @@ describe('Matchers', () => {
     const error = new Error('error');
 
     it('initializes Scheduler', () => {
-        expect(() => Scheduler.get()).not.toThrowError();
+        expect(() => Scheduler.get()).not.toThrow();
     });
 
     describe('#toHaveSubscriptions()', () => {
