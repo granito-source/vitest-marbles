@@ -45,8 +45,8 @@
     "nx": false
   },
   "peerDependencies": {
-    "rxjs": "^7.0.0",
-    "vitest": "^4.0.0"
+    "rxjs": ">=7 <9",
+    "vitest": ">=4 <6"
   },
   "devDependencies": {
     "@nx/esbuild": "23.2.0",
