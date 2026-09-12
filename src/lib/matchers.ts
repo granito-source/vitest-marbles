@@ -3,6 +3,7 @@ import { TestScheduler } from 'rxjs/testing';
 import { Observable } from 'rxjs';
 import { ExpectationResult } from '@vitest/expect';
 import { TestObservable } from './types';
+import { negateLast } from "./not";
 
 interface CustomMatchers<R = unknown> {
     toBeObservable<T>(observable: Observable<T>, subscription?: string): R;
@@ -22,7 +23,7 @@ declare module 'vitest' {
     }
 }
 
-const success: ExpectationResult = {
+const pass: ExpectationResult = {
     pass: true,
     message: () => ''
 };
@@ -34,40 +35,56 @@ expect.extend({
             marbles.map(m => m.trim()) : marbles.trim();
 
         Scheduler.get()
-            .expectSubscriptions(actual.subscriptions).toBe(sanitizedMarbles);
+            .expectSubscriptions(actual.subscriptions)
+            .toBe(sanitizedMarbles);
 
-        return success;
+        if (this.isNot)
+            return negateLast();
+
+        return pass;
     },
     toHaveNoSubscriptions<T>(actual: TestObservable<T>): ExpectationResult {
         Scheduler.get()
             .expectSubscriptions(actual.subscriptions).toBe([]);
 
-        return success;
+        if (this.isNot)
+            return negateLast();
+
+        return pass;
     },
     toBeObservable<T>(actual: Observable<T>, expected: Observable<T>,
         subscription?: string): ExpectationResult {
         Scheduler.get()
             .expectObservable(actual, subscription).toEqual(expected);
 
-        return success;
+        if (this.isNot)
+            return negateLast();
+
+        return pass;
     },
     toBeMarble<T>(actual: Observable<T>, marbles: string,
         values?: Record<string, T>, error?: any): ExpectationResult {
         Scheduler.get()
             .expectObservable(actual).toBe(marbles.trim(), values, error);
 
-        return success;
+        if (this.isNot)
+            return negateLast();
+
+        return pass;
     },
     toSatisfyOnFlush<T>(actual: Observable<T>,
         func: () => void): ExpectationResult {
-        Scheduler.get().expectObservable(actual);
+        if (this.isNot)
+            throw new Error('.toSatisfyOnFlush() cannot be negated');
 
-        const flushTests = Scheduler.get()['flushTests'];
+        const scheduler = Scheduler.get();
+        const flushTests = scheduler['flushTests'];
 
+        scheduler.expectObservable(actual);
         flushTests[flushTests.length - 1].ready = true;
         onFlush.push(func);
 
-        return success;
+        return pass;
     }
 });
 

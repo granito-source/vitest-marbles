@@ -24,8 +24,7 @@ clean way.
 
 # Not supported
 
-* time progression syntax;
-* `.not` syntax.
+* time progression syntax.
 
 # Usage
 

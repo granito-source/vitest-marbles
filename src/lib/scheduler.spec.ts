@@ -1,6 +1,7 @@
 import { Scheduler } from './scheduler';
 import { TestScheduler } from 'rxjs/testing';
 import { SubscriptionLog, TestMessage } from './types';
+import { negate } from "./not";
 
 describe('Scheduler', () => {
     beforeEach(() => Scheduler.init());
@@ -43,9 +44,27 @@ describe('Scheduler', () => {
             expect(() => assertDeepEqual([], [])).not.toThrow();
         });
 
-        it('returns normally when the same subscriptions', () => {
+        it('throws error when actual is empty but expected is "not" empty', () => {
+            const msg = new RegExp('Expected observables to differ, ' +
+                'but they matched.*Received: \\[].*' +
+                'Not expected: \\[]', 's');
+
+            expect(() => assertDeepEqual([], negate([])))
+                .toThrow(expect.toSatisfy(e => msg.test(e.message)));
+        });
+
+        it('returns normally when subscriptions are the same', () => {
             expect(() => assertDeepEqual(subscriptions, subscriptions))
                 .not.toThrow();
+        });
+
+        it('throws error when actual subscriptions but they are "not" expected', () => {
+            const msg = new RegExp('Expected observables to differ, ' +
+                'but they matched.*Received: \\[{.*' +
+                'Not expected: \\[{', 's');
+
+            expect(() => assertDeepEqual(subscriptions, negate(subscriptions)))
+                .toThrow(expect.toSatisfy(e => msg.test(e.message)));
         });
 
         it('throws error when actual subscriptions but expected is empty', () => {
@@ -56,13 +75,23 @@ describe('Scheduler', () => {
                 .toThrow(expect.toSatisfy(e => msg.test(e.message)));
         });
 
-        it('throws error when actual is empty but expected subscriptions', () => {
+        it('returns normally when actual subscriptions and expected is "not" empty', () => {
+            expect(() => assertDeepEqual(subscriptions, negate([])))
+                .not.toThrow();
+        });
+
+        it('throws error when actual is empty but expecting subscriptions', () => {
             const msg = new RegExp('Expected observable to have the ' +
                 'following subscription points:' +
                 '.*"-\\^-!".*"-----\\^".*But got:.*\\[]', 's');
 
             expect(() => assertDeepEqual([], subscriptions))
                 .toThrow(expect.toSatisfy(e => msg.test(e.message)));
+        });
+
+        it('returns normally when actual is empty and "not" expecting subscriptions', () => {
+            expect(() => assertDeepEqual([], negate(subscriptions)))
+                .not.toThrow();
         });
 
         it('throws error when actual and expected subscriptions have different length', () => {
@@ -93,9 +122,28 @@ describe('Scheduler', () => {
                 .toThrow(expect.toSatisfy(e => msg.test(e.message)));
         });
 
-        it('returns normally when the same messages', () => {
+        it('returns normally when actual subscriptions are "not" expected to be the same', () => {
+            const actual = [
+                { subscribedFrame: 0, unsubscribedFrame: 20 },
+                ...subscriptions
+            ];
+
+            expect(() => assertDeepEqual(actual, negate(subscriptions)))
+                .not.toThrow();
+        });
+
+        it('returns normally when messages are the same', () => {
             expect(() => assertDeepEqual(messages, messages))
                 .not.toThrow();
+        });
+
+        it('throws error when actual messages but expected are "not" the same', () => {
+            const msg = new RegExp('Expected observables to differ, ' +
+                'but they matched.*Received: \\[{.*' +
+                'Not expected: \\[{', 's');
+
+            expect(() => assertDeepEqual(messages, negate(messages)))
+                .toThrow(expect.toSatisfy(e => msg.test(e.message)));
         });
 
         it('throws error when actual messages but expected is empty', () => {
@@ -107,13 +155,23 @@ describe('Scheduler', () => {
                 .toThrow(expect.toSatisfy(e => msg.test(e.message)));
         });
 
-        it('throws error when actual empty but expected messages', () => {
+        it('returns normally when actual messages and expected is "not" empty', () => {
+            expect(() => assertDeepEqual(messages, negate([])))
+                .not.toThrow();
+        });
+
+        it('throws error when actual is empty but expecting messages', () => {
             const msg = new RegExp('Expected notifications to be:' +
                 '.*"value": "b".*"value": "e".*But got:' +
                 '.*Array \\[].*Difference:', 's');
 
             expect(() => assertDeepEqual([], messages))
                 .toThrow(expect.toSatisfy(e => msg.test(e.message)));
+        });
+
+        it('returns normally when actual is empty and "not" expecting messages', () => {
+            expect(() => assertDeepEqual([], negate(messages)))
+                .not.toThrow();
         });
 
         it('throws error when actual and expected messages are different', () => {
@@ -141,6 +199,16 @@ describe('Scheduler', () => {
 
             expect(() => assertDeepEqual(actual, expected))
                 .toThrow(expect.toSatisfy(e => msg.test(e.message)));
+        });
+
+        it('returns normally when actual messages are "not" expected to be the same', () => {
+            const actual: TestMessage[] = [
+                ...messages,
+                { frame: 60, notification: { kind: 'C' } }
+            ];
+
+            expect(() => assertDeepEqual(actual, negate(messages)))
+                .not.toThrow();
         });
     });
 });

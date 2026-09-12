@@ -1,10 +1,27 @@
 import { MessagesOrSubscriptions, SubscriptionLog } from './types';
 import './internal-matchers';
+import { affirm, negated } from "./not";
 
 export function assertDeepEqual(actual: MessagesOrSubscriptions,
-    expected?: MessagesOrSubscriptions): void {
+    expected?: any[]): void {
     if (!expected)
         return;
+
+    if (negated(expected)) {
+        const exp = affirm(expected);
+
+        try {
+            assertDeepEqual(actual, exp);
+        } catch {
+            return;
+        }
+
+        throw new Error(
+            'Expected observables to differ, but they matched.\n' +
+            `  Received: ${JSON.stringify(actual)}\n` +
+            `  Not expected: ${JSON.stringify(exp)}`
+        );
+    }
 
     if (expected.length !== 0) {
         if (isSubscriptions(expected))
