@@ -7,7 +7,7 @@ describe('Matchers', () => {
     const error = new Error('error');
 
     it('initializes Scheduler', () => {
-        expect(() => Scheduler.get()).not.toThrowError();
+        expect(() => Scheduler.get()).not.toThrow();
     });
 
     describe('#toHaveSubscriptions()', () => {
@@ -172,6 +172,41 @@ describe('Matchers', () => {
                 expect(func).toHaveBeenCalledWith('c');
                 expect(func).toHaveBeenCalledWith('d');
             });
+        });
+    });
+
+    describe('#not', () => {
+        it('passes when #toHaveSubscriptions() fails', () => {
+            expect(cold('')).not.toHaveSubscriptions('^--!');
+            expect(hot('')).not.toHaveSubscriptions('-^--!');
+        });
+
+        it('passes when #toHaveNoSubscriptions() fails', () => {
+            const x = cold('');
+            const y = hot('');
+
+            x.subscribe();
+            y.subscribe();
+
+            expect(x).not.toHaveNoSubscriptions();
+            expect(y).not.toHaveNoSubscriptions();
+        });
+
+        it('passes when #toBeObservable() fails', () => {
+            expect(cold('--a')).not.toBeObservable(cold('--b'));
+            expect(hot('--a')).not.toBeObservable(hot('----a'));
+        });
+
+        it('passes when #toBeMarble() fails', () => {
+            expect(cold('--a')).not.toBeMarble('--b');
+            expect(hot('--a')).not.toBeMarble('---a');
+            expect(cold('--a', { a: 42 })).not.toBeMarble('--a', { a: 37 });
+            expect(hot('--a', { a: 42 })).not.toBeMarble('---a', { a: 42 });
+        });
+
+        it('does not allow negating #toSatisfyOnFlush()', () => {
+            expect(() => expect(cold('')).not.toSatisfyOnFlush(() => {}))
+                .toThrow('.toSatisfyOnFlush() cannot be negated');
         });
     });
 });
