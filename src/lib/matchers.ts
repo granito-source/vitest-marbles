@@ -1,36 +1,33 @@
 import { Scheduler } from './scheduler';
 import { TestScheduler } from 'rxjs/testing';
 import { Observable } from 'rxjs';
-import { ExpectationResult } from '@vitest/expect';
 import { TestObservable } from './types';
-import { negateLast } from "./not";
-
-interface CustomMatchers<R = unknown> {
-    toBeObservable<T>(observable: Observable<T>, subscription?: string): R;
-
-    toHaveSubscriptions(marbles: string | string[]): R;
-
-    toHaveNoSubscriptions(): R;
-
-    toBeMarble<T = string>(marbles: string, values?: Record<string, T>,
-        error?: any): R;
-
-    toSatisfyOnFlush(func: () => void): R;
-}
+import { negateLast } from './not';
+import { MatcherResult } from 'vitest';
 
 declare module 'vitest' {
-    interface Matchers<T = any> extends CustomMatchers<T> {
+    interface Matchers<T = any> {
+        toBeObservable<X>(observable: Observable<X>, subscription?: string): T;
+
+        toHaveSubscriptions(marbles: string | string[]): T;
+
+        toHaveNoSubscriptions(): T;
+
+        toBeMarble<X = string>(marbles: string, values?: Record<string, X>,
+            error?: any): T;
+
+        toSatisfyOnFlush(func: () => void): T;
     }
 }
 
-const pass: ExpectationResult = {
+const pass: MatcherResult = {
     pass: true,
     message: () => ''
 };
 
 expect.extend({
     toHaveSubscriptions<T>(actual: TestObservable<T>,
-        marbles: string | string[]): ExpectationResult {
+        marbles: string | string[]): MatcherResult {
         const sanitizedMarbles = Array.isArray(marbles) ?
             marbles.map(m => m.trim()) : marbles.trim();
 
@@ -43,7 +40,7 @@ expect.extend({
 
         return pass;
     },
-    toHaveNoSubscriptions<T>(actual: TestObservable<T>): ExpectationResult {
+    toHaveNoSubscriptions<T>(actual: TestObservable<T>): MatcherResult {
         Scheduler.get()
             .expectSubscriptions(actual.subscriptions).toBe([]);
 
@@ -53,7 +50,7 @@ expect.extend({
         return pass;
     },
     toBeObservable<T>(actual: Observable<T>, expected: Observable<T>,
-        subscription?: string): ExpectationResult {
+        subscription?: string): MatcherResult {
         Scheduler.get()
             .expectObservable(actual, subscription).toEqual(expected);
 
@@ -63,7 +60,7 @@ expect.extend({
         return pass;
     },
     toBeMarble<T>(actual: Observable<T>, marbles: string,
-        values?: Record<string, T>, error?: any): ExpectationResult {
+        values?: Record<string, T>, error?: any): MatcherResult {
         Scheduler.get()
             .expectObservable(actual).toBe(marbles.trim(), values, error);
 
@@ -73,7 +70,7 @@ expect.extend({
         return pass;
     },
     toSatisfyOnFlush<T>(actual: Observable<T>,
-        func: () => void): ExpectationResult {
+        func: () => void): MatcherResult {
         if (this.isNot)
             throw new Error('.toSatisfyOnFlush() cannot be negated');
 

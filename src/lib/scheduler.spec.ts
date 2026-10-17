@@ -1,7 +1,7 @@
 import { Scheduler } from './scheduler';
 import { TestScheduler } from 'rxjs/testing';
 import { SubscriptionLog, TestMessage } from './types';
-import { negate } from "./not";
+import { negate } from './not';
 
 describe('Scheduler', () => {
     beforeEach(() => Scheduler.init());

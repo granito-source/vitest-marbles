@@ -1,9 +1,9 @@
-import { Scheduler } from "./scheduler";
-import { ExpectationResult } from "@vitest/expect";
+import { Scheduler } from './scheduler';
+import { MatcherResult } from 'vitest';
 
 const not = Symbol('vitest-marbles-not');
 
-export function negateLast(): ExpectationResult {
+export function negateLast(): MatcherResult {
     const flushTests: FlushableTest[] = Scheduler.get()['flushTests'];
     const expected = flushTests[flushTests.length - 1].expected;
 
