@@ -2,7 +2,7 @@ import { cold, hot, schedule, time } from './marbles';
 import { Scheduler } from './scheduler';
 import { TestScheduler } from 'rxjs/testing';
 import { Subscription } from 'rxjs';
-import { ColdObservable, HotObservable } from "./types";
+import { ColdObservable, HotObservable } from './types';
 
 describe('Marbles', () => {
     let testScheduler: TestScheduler;

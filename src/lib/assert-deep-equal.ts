@@ -1,6 +1,6 @@
 import { MessagesOrSubscriptions, SubscriptionLog } from './types';
 import './internal-matchers';
-import { affirm, negated } from "./not";
+import { affirm, negated } from './not';
 
 export function assertDeepEqual(actual: MessagesOrSubscriptions,
     expected?: any[]): void {
