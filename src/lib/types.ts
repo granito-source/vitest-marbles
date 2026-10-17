@@ -1,7 +1,7 @@
-import { ColdObservable } from "rxjs/internal/testing/ColdObservable";
-import { HotObservable } from "rxjs/internal/testing/HotObservable";
-import { SubscriptionLog } from "rxjs/internal/testing/SubscriptionLog";
-import { TestMessage } from "rxjs/internal/testing/TestMessage";
+import { ColdObservable } from 'rxjs/internal/testing/ColdObservable';
+import { HotObservable } from 'rxjs/internal/testing/HotObservable';
+import { SubscriptionLog } from 'rxjs/internal/testing/SubscriptionLog';
+import { TestMessage } from 'rxjs/internal/testing/TestMessage';
 
 export type TestObservable<T> = ColdObservable<T> | HotObservable<T>;
 

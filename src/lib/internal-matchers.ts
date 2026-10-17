@@ -1,18 +1,10 @@
 import { SubscriptionLog, TestMessage } from './types';
-import { ExpectationResult, MatchersObject } from '@vitest/expect';
 import { marblize } from './marblizer';
+import { MatcherResult } from 'vitest';
 
-interface InternalMatchers<R = unknown> {
-    toBeNotifications: (messages: TestMessage[]) => R;
-
-    toBeSubscriptions: (subscriptions: SubscriptionLog[]) => R;
-
-    toHaveEmptySubscriptions: () => R;
-}
-
-export const internalMatchers: MatchersObject = {
+expect.extend({
     toBeNotifications(actual: TestMessage[],
-        expected: TestMessage[]): ExpectationResult {
+        expected: TestMessage[]): MatcherResult {
         let message = '';
 
         const pass = this.equals(actual, expected);
@@ -35,7 +27,7 @@ export const internalMatchers: MatchersObject = {
         };
     },
     toBeSubscriptions(actualSubs: SubscriptionLog[],
-        expectedSubs: SubscriptionLog[]): ExpectationResult {
+        expectedSubs: SubscriptionLog[]): MatcherResult {
         const actual = marblize(actualSubs);
         const expected = marblize(expectedSubs);
         const pass = sameSubscriptions(actual, expected);
@@ -58,7 +50,7 @@ export const internalMatchers: MatchersObject = {
             message: () => message
         };
     },
-    toHaveEmptySubscriptions(actual: SubscriptionLog[]): ExpectationResult {
+    toHaveEmptySubscriptions(actual: SubscriptionLog[]): MatcherResult {
         const message = this.utils.matcherHint('.toHaveNoSubscriptions') +
             '\n\n' +
             `Expected observable to have no subscription points\n` +
@@ -72,12 +64,15 @@ export const internalMatchers: MatchersObject = {
             message: () => message
         };
     }
-}
-
-expect.extend(internalMatchers);
+});
 
 declare module 'vitest' {
-    interface Matchers<T = any> extends InternalMatchers<T> {
+    interface Matchers<T = any> {
+        toBeNotifications: (messages: TestMessage[]) => T;
+
+        toBeSubscriptions: (subscriptions: SubscriptionLog[]) => T;
+
+        toHaveEmptySubscriptions: () => T;
     }
 }
 
