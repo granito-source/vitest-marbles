@@ -2,7 +2,7 @@ import { SubscriptionLog, TestMessage } from './types';
 import { marblize } from './marblizer';
 import { MatcherResult } from 'vitest';
 
-interface InternalMatchers<R = unknown> {
+interface InternalMatchers<R> {
     toBeNotifications(messages: TestMessage[]): R;
 
     toBeSubscriptions(subscriptions: SubscriptionLog[]): R;
@@ -11,7 +11,7 @@ interface InternalMatchers<R = unknown> {
 }
 
 declare module 'vitest' {
-    interface Matchers<T = any> extends InternalMatchers<T> {
+    interface Matchers<R> extends InternalMatchers<R> {
     }
 }
 

@@ -5,7 +5,7 @@ import { TestObservable } from './types';
 import { negateLast } from './not';
 import { MatcherResult } from 'vitest';
 
-interface MarbleMatchers<R = unknown> {
+interface MarbleMatchers<R> {
     toBeObservable<T>(observable: Observable<T>, subscription?: string): R;
 
     toHaveSubscriptions(marbles: string | string[]): R;
@@ -19,7 +19,7 @@ interface MarbleMatchers<R = unknown> {
 }
 
 declare module 'vitest' {
-    interface Matchers<T = any> extends MarbleMatchers<T> {
+    interface Matchers<R> extends MarbleMatchers<R> {
     }
 }
 
