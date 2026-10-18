@@ -5,18 +5,21 @@ import { TestObservable } from './types';
 import { negateLast } from './not';
 import { MatcherResult } from 'vitest';
 
+interface MarbleMatchers<R = unknown> {
+    toBeObservable<T>(observable: Observable<T>, subscription?: string): R;
+
+    toHaveSubscriptions(marbles: string | string[]): R;
+
+    toHaveNoSubscriptions(): R;
+
+    toBeMarble<T = string>(marbles: string, values?: Record<string, T>,
+        error?: any): R;
+
+    toSatisfyOnFlush(func: () => void): R;
+}
+
 declare module 'vitest' {
-    interface Matchers<T = any> {
-        toBeObservable<X>(observable: Observable<X>, subscription?: string): T;
-
-        toHaveSubscriptions(marbles: string | string[]): T;
-
-        toHaveNoSubscriptions(): T;
-
-        toBeMarble<X = string>(marbles: string, values?: Record<string, X>,
-            error?: any): T;
-
-        toSatisfyOnFlush(func: () => void): T;
+    interface Matchers<T = any> extends MarbleMatchers<T> {
     }
 }
 
