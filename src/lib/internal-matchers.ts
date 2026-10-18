@@ -2,6 +2,19 @@ import { SubscriptionLog, TestMessage } from './types';
 import { marblize } from './marblizer';
 import { MatcherResult } from 'vitest';
 
+interface InternalMatchers<R = unknown> {
+    toBeNotifications(messages: TestMessage[]): R;
+
+    toBeSubscriptions(subscriptions: SubscriptionLog[]): R;
+
+    toHaveEmptySubscriptions(): R;
+}
+
+declare module 'vitest' {
+    interface Matchers<T = any> extends InternalMatchers<T> {
+    }
+}
+
 expect.extend({
     toBeNotifications(actual: TestMessage[],
         expected: TestMessage[]): MatcherResult {
@@ -65,16 +78,6 @@ expect.extend({
         };
     }
 });
-
-declare module 'vitest' {
-    interface Matchers<T = any> {
-        toBeNotifications: (messages: TestMessage[]) => T;
-
-        toBeSubscriptions: (subscriptions: SubscriptionLog[]) => T;
-
-        toHaveEmptySubscriptions: () => T;
-    }
-}
 
 function sameSubscriptions(actualMarbleArray: string[],
     expectedMarbleArray: string[]): boolean {
